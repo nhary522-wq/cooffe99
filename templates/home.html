@@ -1,0 +1,1539 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="متجر إلكتروني متخصص في بيع منتجات ومحاصيل وأدوات القهوة."
+    >
+
+    <title>مذاق البن | متجر القهوة المختصة</title>
+
+    <style>
+        /* =========================================
+           الإعدادات العامة
+        ========================================= */
+
+        :root {
+            --primary: #6f4328;
+            --primary-dark: #3f2415;
+            --secondary: #a86f47;
+            --accent: #d9a878;
+            --light: #f8f2ec;
+            --light-alt: #fffaf6;
+            --white: #ffffff;
+            --text: #33241c;
+            --muted: #7f6c60;
+            --border: #eaded4;
+            --success: #34785b;
+            --shadow-sm: 0 8px 24px rgba(63, 36, 21, 0.08);
+            --shadow-lg: 0 24px 60px rgba(63, 36, 21, 0.17);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            color: var(--text);
+            background: var(--white);
+            font-family:
+                Tahoma,
+                Arial,
+                "Segoe UI",
+                sans-serif;
+            line-height: 1.7;
+        }
+
+        button,
+        input {
+            font-family: inherit;
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+        }
+
+        a {
+            color: inherit;
+        }
+
+        .home-container {
+            width: min(1180px, calc(100% - 32px));
+            margin-inline: auto;
+        }
+
+        .section-space {
+            padding: 90px 0;
+        }
+
+        .section-heading {
+            max-width: 660px;
+            margin: 0 auto 45px;
+            text-align: center;
+        }
+
+        .section-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            margin-bottom: 12px;
+            color: var(--secondary);
+            font-size: 13px;
+            font-weight: 900;
+        }
+
+        .section-label::before,
+        .section-label::after {
+            content: "";
+            width: 23px;
+            height: 2px;
+            border-radius: 20px;
+            background: var(--accent);
+        }
+
+        .section-heading h2 {
+            margin-bottom: 12px;
+            color: var(--primary-dark);
+            font-size: clamp(28px, 4vw, 42px);
+            line-height: 1.35;
+        }
+
+        .section-heading p {
+            color: var(--muted);
+            font-size: 15px;
+            line-height: 2;
+        }
+
+        /* =========================================
+           القسم الرئيسي
+        ========================================= */
+
+        .coffee-hero {
+            position: relative;
+            min-height: 690px;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(33, 18, 10, 0.94) 0%,
+                    rgba(63, 36, 21, 0.82) 48%,
+                    rgba(63, 36, 21, 0.25) 100%
+                ),
+                url(
+                    "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1800&q=85"
+                )
+                center / cover no-repeat;
+        }
+
+        .coffee-hero::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(
+                    circle at 18% 24%,
+                    rgba(217, 168, 120, 0.16),
+                    transparent 24%
+                );
+            pointer-events: none;
+        }
+
+        .coffee-hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 680px;
+            padding: 90px 0;
+            color: var(--white);
+        }
+
+        .coffee-hero-badge {
+            width: fit-content;
+            margin-bottom: 18px;
+            padding: 9px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 999px;
+            color: #f1d4ba;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(8px);
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .coffee-hero h1 {
+            max-width: 640px;
+            margin-bottom: 20px;
+            font-size: clamp(39px, 6vw, 70px);
+            font-weight: 900;
+            line-height: 1.25;
+        }
+
+        .coffee-hero h1 span {
+            color: #dfb68f;
+        }
+
+        .coffee-hero-description {
+            max-width: 590px;
+            margin-bottom: 32px;
+            color: #ebdfd6;
+            font-size: clamp(15px, 2vw, 18px);
+            line-height: 2;
+        }
+
+        .coffee-hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .coffee-main-button {
+            min-height: 52px;
+            padding: 0 25px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            border: 1px solid transparent;
+            border-radius: 14px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 900;
+            transition: 0.25s ease;
+        }
+
+        .coffee-main-button.primary {
+            color: var(--primary-dark);
+            background: #e5bd98;
+            box-shadow: 0 13px 28px rgba(0, 0, 0, 0.18);
+        }
+
+        .coffee-main-button.primary:hover {
+            background: var(--white);
+            transform: translateY(-3px);
+        }
+
+        .coffee-main-button.outline {
+            color: var(--white);
+            border-color: rgba(255, 255, 255, 0.28);
+            background: rgba(255, 255, 255, 0.07);
+        }
+
+        .coffee-main-button.outline:hover {
+            border-color: var(--white);
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-3px);
+        }
+
+        .coffee-hero-features {
+            margin-top: 48px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 26px;
+        }
+
+        .coffee-hero-feature {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #e7d8cc;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .coffee-hero-feature span {
+            width: 34px;
+            height: 34px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            color: var(--primary-dark);
+            background: #e5bd98;
+        }
+
+        /* =========================================
+           مربع البحث
+        ========================================= */
+
+        .coffee-search-wrapper {
+            position: relative;
+            z-index: 5;
+            margin-top: -42px;
+        }
+
+        .coffee-search-box {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 12px;
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            background: var(--white);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .coffee-search-input-wrapper {
+            position: relative;
+        }
+
+        .coffee-search-input-wrapper span {
+            position: absolute;
+            top: 50%;
+            right: 18px;
+            transform: translateY(-50%);
+            font-size: 19px;
+        }
+
+        .coffee-search-box input {
+            width: 100%;
+            height: 56px;
+            padding: 0 52px 0 20px;
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            outline: none;
+            color: var(--text);
+            background: var(--light-alt);
+            font-size: 14px;
+            transition: 0.2s ease;
+        }
+
+        .coffee-search-box input:focus {
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 4px rgba(168, 111, 71, 0.12);
+        }
+
+        .coffee-search-box button {
+            min-width: 125px;
+            border: 0;
+            border-radius: 15px;
+            color: var(--white);
+            background: var(--primary);
+            font-weight: 900;
+            cursor: pointer;
+            transition: 0.25s ease;
+        }
+
+        .coffee-search-box button:hover {
+            background: var(--primary-dark);
+        }
+
+        .coffee-search-result {
+            display: none;
+            grid-column: 1 / -1;
+            padding: 14px 17px;
+            border-radius: 13px;
+            color: var(--primary-dark);
+            background: var(--light);
+            font-size: 13px;
+        }
+
+        .coffee-search-result.show {
+            display: block;
+        }
+
+        /* =========================================
+           التصنيفات
+        ========================================= */
+
+        .coffee-category-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 22px;
+        }
+
+        .coffee-category-card {
+            position: relative;
+            min-height: 340px;
+            overflow: hidden;
+            border-radius: 24px;
+            box-shadow: var(--shadow-sm);
+            isolation: isolate;
+        }
+
+        .coffee-category-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            background:
+                linear-gradient(
+                    180deg,
+                    rgba(33, 18, 10, 0.05),
+                    rgba(33, 18, 10, 0.88)
+                );
+        }
+
+        .coffee-category-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.55s ease;
+        }
+
+        .coffee-category-card:hover img {
+            transform: scale(1.08);
+        }
+
+        .coffee-category-content {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 2;
+            padding: 27px;
+            color: var(--white);
+        }
+
+        .coffee-category-content span {
+            display: inline-block;
+            margin-bottom: 8px;
+            color: #e5bd98;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .coffee-category-content h3 {
+            margin-bottom: 8px;
+            font-size: 25px;
+        }
+
+        .coffee-category-content p {
+            margin-bottom: 17px;
+            color: #e5d8cf;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .coffee-category-content a {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--white);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 900;
+        }
+
+        /* =========================================
+           المنتجات
+        ========================================= */
+
+        .coffee-products-section {
+            background: var(--light-alt);
+        }
+
+        .coffee-products-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .coffee-product-card {
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: 21px;
+            background: var(--white);
+            box-shadow: var(--shadow-sm);
+            transition: 0.3s ease;
+        }
+
+        .coffee-product-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-7px);
+        }
+
+        .coffee-product-image {
+            position: relative;
+            height: 245px;
+            overflow: hidden;
+            background: var(--light);
+        }
+
+        .coffee-product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .coffee-product-card:hover .coffee-product-image img {
+            transform: scale(1.06);
+        }
+
+        .coffee-product-badge {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            z-index: 2;
+            padding: 6px 10px;
+            border-radius: 999px;
+            color: var(--white);
+            background: var(--primary);
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+        .coffee-favorite-button {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            z-index: 2;
+            width: 38px;
+            height: 38px;
+            display: grid;
+            place-items: center;
+            border: 0;
+            border-radius: 50%;
+            color: var(--primary);
+            background: rgba(255, 255, 255, 0.92);
+            cursor: pointer;
+            font-size: 17px;
+            transition: 0.2s ease;
+        }
+
+        .coffee-favorite-button:hover,
+        .coffee-favorite-button.active {
+            color: #ffffff;
+            background: #9c3f3f;
+        }
+
+        .coffee-product-content {
+            padding: 20px;
+        }
+
+        .coffee-product-category {
+            margin-bottom: 7px;
+            color: var(--secondary);
+            font-size: 11px;
+            font-weight: 900;
+        }
+
+        .coffee-product-title {
+            min-height: 49px;
+            margin-bottom: 9px;
+            color: var(--primary-dark);
+            font-size: 16px;
+            line-height: 1.55;
+        }
+
+        .coffee-product-rating {
+            margin-bottom: 13px;
+            color: #d09245;
+            font-size: 13px;
+        }
+
+        .coffee-product-rating small {
+            color: var(--muted);
+        }
+
+        .coffee-product-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .coffee-product-price {
+            color: var(--primary);
+            font-size: 18px;
+            font-weight: 900;
+        }
+
+        .coffee-product-price small {
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .coffee-add-cart {
+            width: 43px;
+            height: 43px;
+            display: grid;
+            place-items: center;
+            border: 0;
+            border-radius: 13px;
+            color: var(--white);
+            background: var(--primary);
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .coffee-add-cart:hover {
+            background: var(--primary-dark);
+            transform: scale(1.06);
+        }
+
+        /* =========================================
+           العرض الإعلاني
+        ========================================= */
+
+        .coffee-offer {
+            position: relative;
+            overflow: hidden;
+            border-radius: 30px;
+            background:
+                linear-gradient(
+                    105deg,
+                    rgba(46, 26, 15, 0.96),
+                    rgba(78, 44, 25, 0.78)
+                ),
+                url(
+                    "https://images.unsplash.com/photo-1442512595331-e89e73853f31?auto=format&fit=crop&w=1600&q=85"
+                )
+                center / cover no-repeat;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .coffee-offer-content {
+            max-width: 630px;
+            padding: 70px 65px;
+            color: var(--white);
+        }
+
+        .coffee-offer-label {
+            display: inline-block;
+            margin-bottom: 13px;
+            padding: 7px 13px;
+            border-radius: 999px;
+            color: var(--primary-dark);
+            background: #e5bd98;
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        .coffee-offer h2 {
+            margin-bottom: 15px;
+            font-size: clamp(28px, 4vw, 45px);
+            line-height: 1.4;
+        }
+
+        .coffee-offer p {
+            margin-bottom: 25px;
+            color: #e5d8cf;
+            line-height: 2;
+        }
+
+        /* =========================================
+           المزايا
+        ========================================= */
+
+        .coffee-benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+        }
+
+        .coffee-benefit-card {
+            padding: 28px 21px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            background: var(--white);
+            text-align: center;
+            transition: 0.25s ease;
+        }
+
+        .coffee-benefit-card:hover {
+            border-color: var(--accent);
+            box-shadow: var(--shadow-sm);
+            transform: translateY(-5px);
+        }
+
+        .coffee-benefit-icon {
+            width: 58px;
+            height: 58px;
+            margin: 0 auto 17px;
+            display: grid;
+            place-items: center;
+            border-radius: 18px;
+            color: var(--primary-dark);
+            background: var(--light);
+            font-size: 25px;
+        }
+
+        .coffee-benefit-card h3 {
+            margin-bottom: 8px;
+            color: var(--primary-dark);
+            font-size: 16px;
+        }
+
+        .coffee-benefit-card p {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        /* =========================================
+           الإشعار
+        ========================================= */
+
+        .coffee-toast {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            z-index: 2000;
+            max-width: min(350px, calc(100% - 40px));
+            padding: 14px 17px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-radius: 14px;
+            color: var(--white);
+            background: var(--success);
+            box-shadow: var(--shadow-lg);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: 0.3s ease;
+            font-size: 13px;
+        }
+
+        .coffee-toast.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        /* =========================================
+           التجاوب
+        ========================================= */
+
+        @media (max-width: 1050px) {
+            .coffee-products-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .coffee-benefits-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 800px) {
+            .coffee-hero {
+                min-height: 620px;
+                background-position: 62% center;
+            }
+
+            .coffee-category-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .coffee-category-card {
+                min-height: 310px;
+            }
+
+            .coffee-offer-content {
+                padding: 55px 35px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .home-container {
+                width: min(100% - 24px, 1180px);
+            }
+
+            .section-space {
+                padding: 65px 0;
+            }
+
+            .coffee-hero {
+                min-height: 650px;
+            }
+
+            .coffee-hero-content {
+                padding: 65px 0 90px;
+            }
+
+            .coffee-hero-actions {
+                flex-direction: column;
+            }
+
+            .coffee-main-button {
+                width: 100%;
+            }
+
+            .coffee-hero-features {
+                gap: 14px;
+            }
+
+            .coffee-search-box {
+                grid-template-columns: 1fr;
+            }
+
+            .coffee-search-box button {
+                min-height: 52px;
+            }
+
+            .coffee-products-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .coffee-product-image {
+                height: 290px;
+            }
+
+            .coffee-benefits-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .coffee-offer {
+                border-radius: 22px;
+            }
+
+            .coffee-offer-content {
+                padding: 45px 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- استدعاء الشريط العلوي من ملف منفصل -->
+    {% include "header.html" %}
+
+    <main>
+
+        <!-- القسم الرئيسي -->
+        <section class="coffee-hero">
+            <div class="home-container">
+                <div class="coffee-hero-content">
+
+                    <div class="coffee-hero-badge">
+                        حبوب مختارة من أفضل مزارع القهوة
+                    </div>
+
+                    <h1>
+                        اصنع فنجانك
+                        <span>بمذاق لا يُنسى</span>
+                    </h1>
+
+                    <p class="coffee-hero-description">
+                        اكتشف مجموعتنا المختارة من محاصيل القهوة المختصة،
+                        والمنتجات الطازجة، وأدوات التحضير التي تساعدك على
+                        إعداد فنجان مثالي في كل مرة.
+                    </p>
+
+                    <div class="coffee-hero-actions">
+                        <a
+                            href="#coffee-products"
+                            class="coffee-main-button primary"
+                        >
+                            تسوق المنتجات
+                            <span aria-hidden="true">←</span>
+                        </a>
+
+                        <a
+                            href="#coffee-crops"
+                            class="coffee-main-button outline"
+                        >
+                            استكشف المحاصيل
+                        </a>
+                    </div>
+
+                    <div class="coffee-hero-features">
+                        <div class="coffee-hero-feature">
+                            <span>✓</span>
+                            تحميص حديث
+                        </div>
+
+                        <div class="coffee-hero-feature">
+                            <span>✓</span>
+                            جودة مضمونة
+                        </div>
+
+                        <div class="coffee-hero-feature">
+                            <span>✓</span>
+                            توصيل سريع
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- البحث -->
+        <div class="coffee-search-wrapper">
+            <div class="home-container">
+                <form
+                    id="mainCoffeeSearchForm"
+                    class="coffee-search-box"
+                    role="search"
+                    novalidate
+                >
+                    <div class="coffee-search-input-wrapper">
+                        <span aria-hidden="true">🔍</span>
+
+                        <input
+                            id="mainCoffeeSearch"
+                            type="search"
+                            placeholder="ابحث عن محصول أو أداة أو منتج قهوة..."
+                            aria-label="البحث عن المنتجات"
+                            maxlength="100"
+                            autocomplete="off"
+                        >
+                    </div>
+
+                    <button type="submit">بحث</button>
+
+                    <p
+                        id="coffeeSearchResult"
+                        class="coffee-search-result"
+                        aria-live="polite"
+                    ></p>
+                </form>
+            </div>
+        </div>
+
+        <!-- التصنيفات -->
+        <section id="coffee-crops" class="section-space">
+            <div class="home-container">
+
+                <div class="section-heading">
+                    <span class="section-label">تسوق حسب القسم</span>
+
+                    <h2>كل ما تحتاجه لتجربة قهوة متكاملة</h2>
+
+                    <p>
+                        اختر من محاصيل القهوة المميزة ومنتجات التحضير
+                        والأدوات المصممة لتناسب المبتدئين والمحترفين.
+                    </p>
+                </div>
+
+                <div class="coffee-category-grid">
+
+                    <article class="coffee-category-card">
+                        <img
+                            src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=900&q=85"
+                            alt="حبوب ومحاصيل القهوة"
+                            loading="lazy"
+                        >
+
+                        <div class="coffee-category-content">
+                            <span>اختيارات طازجة</span>
+                            <h3>محاصيل القهوة</h3>
+
+                            <p>
+                                محاصيل متنوعة بنكهات وإيحاءات مختلفة
+                                من أشهر مناطق زراعة القهوة.
+                            </p>
+
+                            <a href="#crop-collection">
+                                تصفح المحاصيل
+                                <span aria-hidden="true">←</span>
+                            </a>
+                        </div>
+                    </article>
+
+                    <article
+                        id="coffee-products"
+                        class="coffee-category-card"
+                    >
+                        <img
+                            src="https://images.unsplash.com/photo-1498804103079-a6351b050096?auto=format&fit=crop&w=900&q=85"
+                            alt="منتجات القهوة"
+                            loading="lazy"
+                        >
+
+                        <div class="coffee-category-content">
+                            <span>نكهات مميزة</span>
+                            <h3>منتجات القهوة</h3>
+
+                            <p>
+                                خلطات مختارة ومنتجات تناسب القهوة
+                                اليومية والضيافة والمناسبات.
+                            </p>
+
+                            <a href="#">
+                                تصفح المنتجات
+                                <span aria-hidden="true">←</span>
+                            </a>
+                        </div>
+                    </article>
+
+                    <article
+                        id="coffee-tools"
+                        class="coffee-category-card"
+                    >
+                        <img
+                            src="https://images.unsplash.com/photo-1511081692775-05d0f180a065?auto=format&fit=crop&w=900&q=85"
+                            alt="أدوات تحضير القهوة"
+                            loading="lazy"
+                        >
+
+                        <div class="coffee-category-content">
+                            <span>تحضير احترافي</span>
+                            <h3>أدوات القهوة</h3>
+
+                            <p>
+                                مطاحن وأدوات تقطير وأباريق وملحقات
+                                تساعدك على تحضير قهوتك بدقة.
+                            </p>
+
+                            <a href="#">
+                                تصفح الأدوات
+                                <span aria-hidden="true">←</span>
+                            </a>
+                        </div>
+                    </article>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- مجموعة محاصيل القهوة -->
+        <section id="crop-collection" class="section-space coffee-products-section">
+            <div class="home-container">
+                <div class="section-heading">
+                    <span class="section-label">تصفح المحاصيل</span>
+                    <h2>محاصيل قهوة مختارة بعناية</h2>
+                    <p>أربعة محاصيل متنوعة بنكهات تناسب طرق التحضير المختلفة.</p>
+                </div>
+                <div class="coffee-products-grid">
+                    <article class="coffee-product-card" data-product-name="شلشلي إثيوبي">
+                        <div class="coffee-product-image">
+                            <span class="coffee-product-badge">إثيوبيا</span>
+                            <img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=700&q=85" alt="محصول شلشلي إثيوبي" loading="lazy">
+                        </div>
+                        <div class="coffee-product-content">
+                            <p class="coffee-product-category">محاصيل القهوة</p>
+                            <h3 class="coffee-product-title">شلشلي إثيوبي</h3>
+                            <p>إيحاءات فاكهية زاهية وقوام متوازن.</p>
+                        </div>
+                    </article>
+                    <article class="coffee-product-card" data-product-name="مزيج البهاء">
+                        <div class="coffee-product-image">
+                            <span class="coffee-product-badge">مزيج مميز</span>
+                            <img src="https://images.unsplash.com/photo-1497515114629-f71d768fd07c?auto=format&fit=crop&w=700&q=85" alt="محصول مزيج البهاء" loading="lazy">
+                        </div>
+                        <div class="coffee-product-content">
+                            <p class="coffee-product-category">محاصيل القهوة</p>
+                            <h3 class="coffee-product-title">مزيج البهاء</h3>
+                            <p>مزيج غني بنكهة الشوكولاتة والمكسرات.</p>
+                        </div>
+                    </article>
+                    <article class="coffee-product-card" data-product-name="بلقيس اليمن">
+                        <div class="coffee-product-image">
+                            <span class="coffee-product-badge">اليمن</span>
+                            <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=700&q=85" alt="محصول بلقيس اليمن" loading="lazy">
+                        </div>
+                        <div class="coffee-product-content">
+                            <p class="coffee-product-category">محاصيل القهوة</p>
+                            <h3 class="coffee-product-title">بلقيس اليمن</h3>
+                            <p>طابع يمني أصيل بإيحاءات التوابل والكاكاو.</p>
+                        </div>
+                    </article>
+                    <article class="coffee-product-card" data-product-name="روبي كلومبي">
+                        <div class="coffee-product-image">
+                            <span class="coffee-product-badge">كولومبيا</span>
+                            <img src="https://images.unsplash.com/photo-1442512595331-e89e73853f31?auto=format&fit=crop&w=700&q=85" alt="محصول روبي كلومبي" loading="lazy">
+                        </div>
+                        <div class="coffee-product-content">
+                            <p class="coffee-product-category">محاصيل القهوة</p>
+                            <h3 class="coffee-product-title">روبي كلومبي</h3>
+                            <p>حلاوة كراميل وحموضة ناعمة ونهاية نظيفة.</p>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- المنتجات الأكثر طلبًا -->
+        <section class="section-space coffee-products-section">
+            <div class="home-container">
+
+                <div class="section-heading">
+                    <span class="section-label">الأكثر طلبًا</span>
+
+                    <h2>منتجات مختارة لعشاق القهوة</h2>
+
+                    <p>
+                        مجموعة تجريبية يمكنك ربطها لاحقًا بمنتجات
+                        قاعدة بيانات Django.
+                    </p>
+                </div>
+
+                <div class="coffee-products-grid">
+
+                    <article
+                        class="coffee-product-card"
+                        data-product-name="محصول إثيوبي قوجي"
+                    >
+                        <div class="coffee-product-image">
+                            <span class="coffee-product-badge">الأكثر مبيعًا</span>
+
+                            <button
+                                class="coffee-favorite-button"
+                                type="button"
+                                aria-label="إضافة إلى المفضلة"
+                            >
+                                ♡
+                            </button>
+
+                            <img
+                                src="https://images.unsplash.com/photo-1559056199-641a0ac8b55e?auto=format&fit=crop&w=700&q=85"
+                                alt="محصول قهوة إثيوبي"
+                                loading="lazy"
+                            >
+                        </div>
+
+                        <div class="coffee-product-content">
+                            <p class="coffee-product-category">
+                                محاصيل القهوة
+                            </p>
+
+                            <h3 class="coffee-product-title">
+                                محصول إثيوبي قوجي بإيحاءات فاكهية
+                            </h3>
+
+                            <div class="coffee-product-rating">
+                                ★★★★★
+                                <small>(42 تقييمًا)</small>
+                            </div>
+
+                            <div class="coffee-product-footer">
+                                <p class="coffee-product-price">
+                                    65
+                                    <small>ريال</small>
+                                </p>
+
+                                <button
+                                    class="coffee-add-cart"
+                                    type="button"
+                                    aria-label="إضافة محصول إثيوبي إلى السلة"
+                                >
+                                    🛒
+                                </button>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article
+                        class="coffee-product-card"
+                        data-product-name="مطحنة قهوة يدوية"
+                    >
+                        <div class="coffee-product-image">
+                            <span class="coffee-product-badge">جديد</span>
+
+                            <button
+                                class="coffee-favorite-button"
+                                type="button"
+                                aria-label="إضافة إلى المفضلة"
+                            >
+                                ♡
+                            </button>
+
+                            <img
+                                src="https://images.unsplash.com/photo-1575444758702-4a6b9222336e?auto=format&fit=crop&w=700&q=85"
+                                alt="مطحنة قهوة يدوية"
+                                loading="lazy"
+                            >
+                        </div>
+
+                        <div class="coffee-product-content">
+                            <p class="coffee-product-category">
+                                أدوات القهوة
+                            </p>
+
+                            <h3 class="coffee-product-title">
+                                مطحنة قهوة يدوية بدرجات طحن متعددة
+                            </h3>
+
+                            <div class="coffee-product-rating">
+                                ★★★★★
+                                <small>(31 تقييمًا)</small>
+                            </div>
+
+                            <div class="coffee-product-footer">
+                                <p class="coffee-product-price">
+                                    119
+                                    <small>ريال</small>
+                                </p>
+
+                                <button
+                                    class="coffee-add-cart"
+                                    type="button"
+                                    aria-label="إضافة مطحنة القهوة إلى السلة"
+                                >
+                                    🛒
+                                </button>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article
+                        class="coffee-product-card"
+                        data-product-name="أداة تقطير زجاجية"
+                    >
+                        <div class="coffee-product-image">
+                            <span class="coffee-product-badge">مميز</span>
+
+                            <button
+                                class="coffee-favorite-button"
+                                type="button"
+                                aria-label="إضافة إلى المفضلة"
+                            >
+                                ♡
+                            </button>
+
+                            <img
+                                src="https://images.unsplash.com/photo-1545665225-b23b99e4d45e?auto=format&fit=crop&w=700&q=85"
+                                alt="أداة تقطير القهوة"
+                                loading="lazy"
+                            >
+                        </div>
+
+                        <div class="coffee-product-content">
+                            <p class="coffee-product-category">
+                                أدوات التحضير
+                            </p>
+
+                            <h3 class="coffee-product-title">
+                                أداة تقطير زجاجية لتحضير القهوة المختصة
+                            </h3>
+
+                            <div class="coffee-product-rating">
+                                ★★★★★
+                                <small>(26 تقييمًا)</small>
+                            </div>
+
+                            <div class="coffee-product-footer">
+                                <p class="coffee-product-price">
+                                    89
+                                    <small>ريال</small>
+                                </p>
+
+                                <button
+                                    class="coffee-add-cart"
+                                    type="button"
+                                    aria-label="إضافة أداة التقطير إلى السلة"
+                                >
+                                    🛒
+                                </button>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article
+                        class="coffee-product-card"
+                        data-product-name="كوب قهوة خزفي"
+                    >
+                        <div class="coffee-product-image">
+                            <span class="coffee-product-badge">عرض</span>
+
+                            <button
+                                class="coffee-favorite-button"
+                                type="button"
+                                aria-label="إضافة إلى المفضلة"
+                            >
+                                ♡
+                            </button>
+
+                            <img
+                                src="https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?auto=format&fit=crop&w=700&q=85"
+                                alt="كوب قهوة خزفي"
+                                loading="lazy"
+                            >
+                        </div>
+
+                        <div class="coffee-product-content">
+                            <p class="coffee-product-category">
+                                أكواب القهوة
+                            </p>
+
+                            <h3 class="coffee-product-title">
+                                كوب قهوة خزفي بتصميم بسيط وأنيق
+                            </h3>
+
+                            <div class="coffee-product-rating">
+                                ★★★★★
+                                <small>(18 تقييمًا)</small>
+                            </div>
+
+                            <div class="coffee-product-footer">
+                                <p class="coffee-product-price">
+                                    39
+                                    <small>ريال</small>
+                                </p>
+
+                                <button
+                                    class="coffee-add-cart"
+                                    type="button"
+                                    aria-label="إضافة كوب القهوة إلى السلة"
+                                >
+                                    🛒
+                                </button>
+                            </div>
+                        </div>
+                    </article>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- العرض -->
+        <section class="section-space">
+            <div class="home-container">
+                <div class="coffee-offer">
+                    <div class="coffee-offer-content">
+
+                        <span class="coffee-offer-label">
+                            عرض لفترة محدودة
+                        </span>
+
+                        <h2>
+                            ابدأ رحلتك مع القهوة المختصة
+                        </h2>
+
+                        <p>
+                            احصل على خصم يصل إلى 20% على مجموعة مختارة
+                            من المحاصيل وأدوات التحضير، واستمتع بتجربة
+                            قهوة مختلفة داخل منزلك.
+                        </p>
+
+                        <a
+                            href="#coffee-products"
+                            class="coffee-main-button primary"
+                        >
+                            اكتشف العرض
+                            <span aria-hidden="true">←</span>
+                        </a>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- المزايا -->
+        <section class="section-space">
+            <div class="home-container">
+
+                <div class="section-heading">
+                    <span class="section-label">لماذا نحن؟</span>
+
+                    <h2>نهتم بكل تفاصيل فنجانك</h2>
+
+                    <p>
+                        نحرص على تقديم منتجات موثوقة وتجربة شراء
+                        سهلة منذ اختيار المنتج وحتى وصوله إليك.
+                    </p>
+                </div>
+
+                <div class="coffee-benefits-grid">
+
+                    <article class="coffee-benefit-card">
+                        <div class="coffee-benefit-icon">🌱</div>
+                        <h3>محاصيل مختارة</h3>
+                        <p>
+                            نختار المحاصيل بعناية من مصادر موثوقة
+                            لضمان الجودة والطعم المميز.
+                        </p>
+                    </article>
+
+                    <article class="coffee-benefit-card">
+                        <div class="coffee-benefit-icon">🔥</div>
+                        <h3>تحميص حديث</h3>
+                        <p>
+                            نوفر منتجات محمصة حديثًا للمحافظة
+                            على النكهة والرائحة.
+                        </p>
+                    </article>
+
+                    <article class="coffee-benefit-card">
+                        <div class="coffee-benefit-icon">🚚</div>
+                        <h3>شحن سريع</h3>
+                        <p>
+                            تجهيز سريع للطلبات وخيارات توصيل
+                            مناسبة إلى مختلف مناطق المملكة.
+                        </p>
+                    </article>
+
+                    <article class="coffee-benefit-card">
+                        <div class="coffee-benefit-icon">🔒</div>
+                        <h3>دفع آمن</h3>
+                        <p>
+                            تجربة دفع موثوقة مع حماية بيانات
+                            العميل وعدم تخزين المعلومات الحساسة.
+                        </p>
+                    </article>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- استدعاء الشريط السفلي من ملف منفصل -->
+    {% include "footer.html" %}
+
+    <div
+        id="coffeeToast"
+        class="coffee-toast"
+        role="status"
+        aria-live="polite"
+    >
+        <span>✓</span>
+        <span id="coffeeToastMessage">
+            تمت إضافة المنتج إلى السلة.
+        </span>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const searchForm = document.getElementById(
+                "mainCoffeeSearchForm"
+            );
+            const searchInput = document.getElementById(
+                "mainCoffeeSearch"
+            );
+            const searchResult = document.getElementById(
+                "coffeeSearchResult"
+            );
+
+            const cartButtons = document.querySelectorAll(
+                ".coffee-add-cart"
+            );
+            const favoriteButtons = document.querySelectorAll(
+                ".coffee-favorite-button"
+            );
+            const cartCountElement = document.querySelector(
+                ".coffee-cart-count"
+            );
+
+            let cartCount = 0;
+            let toastTimer = null;
+
+            function showToast(message) {
+                const toast = document.getElementById("coffeeToast");
+                const toastMessage = document.getElementById(
+                    "coffeeToastMessage"
+                );
+
+                if (!toast || !toastMessage) {
+                    return;
+                }
+
+                toastMessage.textContent = message;
+                toast.classList.add("show");
+
+                window.clearTimeout(toastTimer);
+
+                toastTimer = window.setTimeout(function () {
+                    toast.classList.remove("show");
+                }, 2800);
+            }
+
+            if (searchForm && searchInput && searchResult) {
+                searchForm.addEventListener("submit", function (event) {
+                    event.preventDefault();
+
+                    const query = searchInput.value
+                        .trim()
+                        .replace(/[<>]/g, "");
+
+                    if (!query) {
+                        searchResult.textContent =
+                            "يرجى كتابة اسم المنتج الذي تبحث عنه.";
+
+                        searchResult.classList.add("show");
+                        searchInput.focus();
+                        return;
+                    }
+
+                    const products = Array.from(
+                        document.querySelectorAll(
+                            ".coffee-product-card"
+                        )
+                    );
+
+                    const matchingProducts = products.filter(
+                        function (product) {
+                            const productName =
+                                product.dataset.productName || "";
+
+                            return productName.includes(query);
+                        }
+                    );
+
+                    if (matchingProducts.length > 0) {
+                        searchResult.textContent =
+                            "تم العثور على " +
+                            matchingProducts.length +
+                            " منتج مطابق لبحثك عن: " +
+                            query;
+
+                        matchingProducts[0].scrollIntoView({
+                            behavior: "smooth",
+                            block: "center"
+                        });
+                    } else {
+                        searchResult.textContent =
+                            "لم نجد منتجًا مطابقًا لعبارة: " +
+                            query +
+                            ". جرّب البحث بكلمة أقصر.";
+                    }
+
+                    searchResult.classList.add("show");
+                });
+            }
+
+            cartButtons.forEach(function (button) {
+                button.addEventListener("click", function () {
+                    const productCard = button.closest(
+                        ".coffee-product-card"
+                    );
+
+                    const productName = productCard
+                        ? productCard.dataset.productName
+                        : "المنتج";
+
+                    cartCount += 1;
+
+                    if (cartCountElement) {
+                        cartCountElement.textContent = cartCount;
+                    }
+
+                    showToast(
+                        "تمت إضافة " +
+                        productName +
+                        " إلى سلة المشتريات."
+                    );
+                });
+            });
+
+            favoriteButtons.forEach(function (button) {
+                button.addEventListener("click", function () {
+                    const isActive =
+                        button.classList.toggle("active");
+
+                    button.textContent = isActive ? "♥" : "♡";
+
+                    button.setAttribute(
+                        "aria-label",
+                        isActive
+                            ? "إزالة من المفضلة"
+                            : "إضافة إلى المفضلة"
+                    );
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

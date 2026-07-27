@@ -1,0 +1,437 @@
+<style>
+    /* =========================================
+       الشريط السفلي
+    ========================================= */
+
+    .coffee-footer {
+        position: relative;
+        overflow: hidden;
+        color: #ffffff;
+        background:
+            radial-gradient(
+                circle at 10% 10%,
+                rgba(168, 111, 71, 0.24),
+                transparent 30%
+            ),
+            linear-gradient(145deg, #3f2415, #24140c);
+    }
+
+    .coffee-footer::before {
+        content: "";
+        position: absolute;
+        top: -100px;
+        left: -100px;
+        width: 270px;
+        height: 270px;
+        border: 55px solid rgba(255, 255, 255, 0.025);
+        border-radius: 50%;
+    }
+
+    .coffee-footer-container {
+        position: relative;
+        z-index: 1;
+        width: min(1180px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 65px 0 35px;
+    }
+
+    .coffee-footer-grid {
+        display: grid;
+        grid-template-columns: 1.3fr 0.8fr 0.8fr 1.1fr;
+        gap: 42px;
+    }
+
+    .coffee-footer-brand {
+        max-width: 340px;
+    }
+
+    .coffee-footer-logo {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        color: #ffffff;
+        text-decoration: none;
+    }
+
+    .coffee-footer-logo-icon {
+        width: 50px;
+        height: 50px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        background: linear-gradient(145deg, #b98058, #724126);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+        font-size: 23px;
+    }
+
+    .coffee-footer-logo strong {
+        font-size: 22px;
+        font-weight: 900;
+    }
+
+    .coffee-footer-description {
+        margin: 20px 0;
+        color: #d7c8bd;
+        font-size: 14px;
+        line-height: 2;
+    }
+
+    .coffee-social-links {
+        display: flex;
+        gap: 9px;
+    }
+
+    .coffee-social-links a {
+        width: 40px;
+        height: 40px;
+        display: grid;
+        place-items: center;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 12px;
+        color: #ffffff;
+        background: rgba(255, 255, 255, 0.06);
+        text-decoration: none;
+        transition: 0.25s ease;
+    }
+
+    .coffee-social-links a:hover {
+        color: #3f2415;
+        border-color: #e7c3a5;
+        background: #e7c3a5;
+        transform: translateY(-3px);
+    }
+
+    .coffee-footer-column h3 {
+        position: relative;
+        margin: 7px 0 23px;
+        padding-bottom: 12px;
+        color: #ffffff;
+        font-size: 17px;
+    }
+
+    .coffee-footer-column h3::after {
+        content: "";
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        width: 35px;
+        height: 3px;
+        border-radius: 20px;
+        background: #b98058;
+    }
+
+    .coffee-footer-links {
+        display: flex;
+        flex-direction: column;
+        gap: 13px;
+    }
+
+    .coffee-footer-links a {
+        width: fit-content;
+        color: #d7c8bd;
+        text-decoration: none;
+        font-size: 14px;
+        transition: 0.2s ease;
+    }
+
+    .coffee-footer-links a:hover {
+        color: #ffffff;
+        transform: translateX(-5px);
+    }
+
+    .coffee-contact-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .coffee-contact-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        color: #d7c8bd;
+        font-size: 14px;
+        line-height: 1.8;
+    }
+
+    .coffee-contact-icon {
+        width: 31px;
+        height: 31px;
+        display: grid;
+        place-items: center;
+        flex-shrink: 0;
+        border-radius: 9px;
+        color: #ffffff;
+        background: rgba(185, 128, 88, 0.18);
+    }
+
+    .coffee-newsletter {
+        margin-top: 24px;
+    }
+
+    .coffee-newsletter-form {
+        display: flex;
+        gap: 8px;
+        padding: 6px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.06);
+    }
+
+    .coffee-newsletter-form input {
+        min-width: 0;
+        flex: 1;
+        padding: 11px;
+        border: 0;
+        outline: none;
+        color: #ffffff;
+        background: transparent;
+        font-family: inherit;
+    }
+
+    .coffee-newsletter-form input::placeholder {
+        color: #bfaea2;
+    }
+
+    .coffee-newsletter-form button {
+        padding: 10px 15px;
+        border: 0;
+        border-radius: 10px;
+        color: #3f2415;
+        background: #e7c3a5;
+        font-family: inherit;
+        font-weight: 800;
+        cursor: pointer;
+        transition: 0.2s ease;
+    }
+
+    .coffee-newsletter-form button:hover {
+        background: #ffffff;
+    }
+
+    .coffee-newsletter-message {
+        min-height: 20px;
+        margin: 8px 4px 0;
+        color: #e7c3a5;
+        font-size: 12px;
+    }
+
+    .coffee-footer-bottom {
+        margin-top: 50px;
+        padding-top: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        color: #bfaea2;
+        font-size: 13px;
+    }
+
+    .coffee-footer-policy-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 18px;
+    }
+
+    .coffee-footer-policy-links a {
+        color: #bfaea2;
+        text-decoration: none;
+    }
+
+    .coffee-footer-policy-links a:hover {
+        color: #ffffff;
+    }
+
+    @media (max-width: 980px) {
+        .coffee-footer-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 620px) {
+        .coffee-footer-container {
+            width: min(100% - 28px, 1180px);
+            padding-top: 48px;
+        }
+
+        .coffee-footer-grid {
+            grid-template-columns: 1fr;
+            gap: 34px;
+        }
+
+        .coffee-footer-bottom {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+</style>
+
+<footer id="coffee-about" class="coffee-footer">
+    <div class="coffee-footer-container">
+
+        <div class="coffee-footer-grid">
+
+            <div class="coffee-footer-brand">
+                <a href="/" class="coffee-footer-logo">
+                    <span class="coffee-footer-logo-icon" aria-hidden="true">
+                        ☕
+                    </span>
+
+                    <strong>مذاق البن</strong>
+                </a>
+
+                <p class="coffee-footer-description">
+                    متجر إلكتروني متخصص في توفير أجود محاصيل ومنتجات
+                    القهوة وأدوات التحضير، لنمنحك تجربة قهوة مميزة
+                    تبدأ من اختيار الحبة وتنتهي بفنجان متقن.
+                </p>
+
+                <div class="coffee-social-links" aria-label="حسابات التواصل">
+                    <a href="#" aria-label="إنستغرام" title="إنستغرام">◎</a>
+                    <a href="#" aria-label="إكس" title="إكس">𝕏</a>
+                    <a href="#" aria-label="سناب شات" title="سناب شات">◉</a>
+                    <a href="#" aria-label="واتساب" title="واتساب">◔</a>
+                </div>
+            </div>
+
+            <div class="coffee-footer-column">
+                <h3>روابط سريعة</h3>
+
+                <div class="coffee-footer-links">
+                    <a href="/">الرئيسية</a>
+                    <a href="#coffee-products">المنتجات</a>
+                    <a href="#coffee-crops">محاصيل القهوة</a>
+                    <a href="#coffee-tools">أدوات التحضير</a>
+                    <a href="#coffee-about">عن المتجر</a>
+                </div>
+            </div>
+
+            <div class="coffee-footer-column">
+                <h3>خدمة العملاء</h3>
+
+                <div class="coffee-footer-links">
+                    <a href="#">تواصل معنا</a>
+                    <a href="#">الأسئلة الشائعة</a>
+                    <a href="#">سياسة الشحن</a>
+                    <a href="#">الاستبدال والاسترجاع</a>
+                    <a href="#">تتبع الطلب</a>
+                </div>
+            </div>
+
+            <div class="coffee-footer-column">
+                <h3>تواصل معنا</h3>
+
+                <div class="coffee-contact-list">
+                    <div class="coffee-contact-item">
+                        <span class="coffee-contact-icon">📍</span>
+                        <span>المملكة العربية السعودية</span>
+                    </div>
+
+                    <div class="coffee-contact-item">
+                        <span class="coffee-contact-icon">☎</span>
+                        <span dir="ltr">+966 50 000 0000</span>
+                    </div>
+
+                    <div class="coffee-contact-item">
+                        <span class="coffee-contact-icon">✉</span>
+                        <span>info@example.com</span>
+                    </div>
+                </div>
+
+                <div class="coffee-newsletter">
+                    <form
+                        id="coffeeNewsletterForm"
+                        class="coffee-newsletter-form"
+                        novalidate
+                    >
+                        <input
+                            id="coffeeNewsletterEmail"
+                            type="email"
+                            placeholder="أدخل بريدك الإلكتروني"
+                            aria-label="البريد الإلكتروني"
+                            maxlength="254"
+                            required
+                        >
+
+                        <button type="submit">اشتراك</button>
+                    </form>
+
+                    <p
+                        id="coffeeNewsletterMessage"
+                        class="coffee-newsletter-message"
+                        aria-live="polite"
+                    ></p>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="coffee-footer-bottom">
+            <p>
+                جميع الحقوق محفوظة ©
+                <span id="coffeeCurrentYear"></span>
+                متجر مذاق البن
+            </p>
+
+            <div class="coffee-footer-policy-links">
+                <a href="#">سياسة الخصوصية</a>
+                <a href="#">الشروط والأحكام</a>
+            </div>
+        </div>
+
+    </div>
+</footer>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const yearElement = document.getElementById("coffeeCurrentYear");
+        const newsletterForm = document.getElementById(
+            "coffeeNewsletterForm"
+        );
+        const emailInput = document.getElementById(
+            "coffeeNewsletterEmail"
+        );
+        const messageElement = document.getElementById(
+            "coffeeNewsletterMessage"
+        );
+
+        if (yearElement) {
+            yearElement.textContent = new Date().getFullYear();
+        }
+
+        if (!newsletterForm || !emailInput || !messageElement) {
+            return;
+        }
+
+        newsletterForm.addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const email = emailInput.value.trim();
+            const emailPattern =
+                /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+            if (!email) {
+                messageElement.textContent =
+                    "يرجى إدخال بريدك الإلكتروني.";
+                return;
+            }
+
+            if (!emailPattern.test(email)) {
+                messageElement.textContent =
+                    "يرجى إدخال بريد إلكتروني صحيح.";
+                return;
+            }
+
+            /*
+             * اربط النموذج لاحقًا مع Django باستخدام fetch
+             * وإرسال CSRF Token إلى View مخصص للاشتراك.
+             */
+
+            messageElement.textContent =
+                "تم تسجيل بريدك بنجاح في القائمة البريدية.";
+
+            newsletterForm.reset();
+        });
+    });
+</script>

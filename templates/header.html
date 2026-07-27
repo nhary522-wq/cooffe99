@@ -1,0 +1,422 @@
+{% load static %}
+
+<style>
+    /* =========================================
+       الشريط العلوي
+    ========================================= */
+
+    :root {
+        --coffee-primary: #6f4328;
+        --coffee-primary-dark: #3f2415;
+        --coffee-secondary: #a86f47;
+        --coffee-light: #f8f2ec;
+        --coffee-white: #ffffff;
+        --coffee-text: #33241c;
+        --coffee-muted: #806f64;
+        --coffee-border: #eaded4;
+        --coffee-shadow: 0 12px 35px rgba(63, 36, 21, 0.12);
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    .coffee-announcement {
+        background: var(--coffee-primary-dark);
+        color: var(--coffee-white);
+        padding: 9px 20px;
+        text-align: center;
+        font-size: 13px;
+        line-height: 1.7;
+    }
+
+    .coffee-announcement strong {
+        color: #e9c6a7;
+    }
+
+    .coffee-header {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background: rgba(255, 255, 255, 0.96);
+        border-bottom: 1px solid var(--coffee-border);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+    }
+
+    .coffee-header-container {
+        width: min(1180px, calc(100% - 32px));
+        min-height: 82px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+    }
+
+    .coffee-logo {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        color: var(--coffee-primary-dark);
+        text-decoration: none;
+        flex-shrink: 0;
+    }
+
+    .coffee-logo-icon {
+        width: 48px;
+        height: 48px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        color: var(--coffee-white);
+        background:
+            radial-gradient(circle at 35% 25%, #bd855c, transparent 32%),
+            linear-gradient(145deg, var(--coffee-secondary), var(--coffee-primary-dark));
+        box-shadow: 0 8px 22px rgba(111, 67, 40, 0.25);
+        font-size: 24px;
+    }
+
+    .coffee-logo-text {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.15;
+    }
+
+    .coffee-logo-text strong {
+        font-size: 21px;
+        font-weight: 900;
+    }
+
+    .coffee-logo-text span {
+        margin-top: 5px;
+        color: var(--coffee-muted);
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .coffee-nav {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .coffee-nav a {
+        position: relative;
+        padding: 12px 13px;
+        color: var(--coffee-text);
+        border-radius: 12px;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 700;
+        transition: 0.25s ease;
+    }
+
+    .coffee-nav a:hover,
+    .coffee-nav a.active {
+        color: var(--coffee-primary);
+        background: var(--coffee-light);
+    }
+
+    .coffee-nav a::after {
+        content: "";
+        position: absolute;
+        right: 50%;
+        bottom: 6px;
+        width: 0;
+        height: 2px;
+        background: var(--coffee-primary);
+        transform: translateX(50%);
+        transition: width 0.25s ease;
+    }
+
+    .coffee-nav a:hover::after,
+    .coffee-nav a.active::after {
+        width: 24px;
+    }
+
+    .coffee-header-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .coffee-action-button {
+        position: relative;
+        width: 43px;
+        height: 43px;
+        display: grid;
+        place-items: center;
+        border: 1px solid var(--coffee-border);
+        border-radius: 13px;
+        color: var(--coffee-primary-dark);
+        background: var(--coffee-white);
+        text-decoration: none;
+        cursor: pointer;
+        transition: 0.25s ease;
+        font-size: 18px;
+    }
+
+    .coffee-action-button:hover {
+        color: var(--coffee-white);
+        border-color: var(--coffee-primary);
+        background: var(--coffee-primary);
+        transform: translateY(-2px);
+    }
+
+    .coffee-auth-link {
+        min-height: 43px;
+        padding: 0 15px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--coffee-primary);
+        border-radius: 13px;
+        color: var(--coffee-primary);
+        background: var(--coffee-white);
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 900;
+        white-space: nowrap;
+        transition: 0.25s ease;
+    }
+
+    .coffee-auth-link.primary,
+    .coffee-auth-link:hover {
+        color: var(--coffee-white);
+        background: var(--coffee-primary);
+    }
+
+    .coffee-logout-form {
+        margin: 0;
+    }
+
+    .coffee-cart-count {
+        position: absolute;
+        top: -6px;
+        left: -6px;
+        min-width: 20px;
+        height: 20px;
+        padding: 0 5px;
+        display: grid;
+        place-items: center;
+        border: 2px solid var(--coffee-white);
+        border-radius: 999px;
+        color: var(--coffee-white);
+        background: var(--coffee-secondary);
+        font-size: 10px;
+        font-weight: 800;
+    }
+
+    .coffee-menu-button {
+        display: none;
+    }
+
+    .coffee-mobile-menu {
+        display: none;
+        padding: 0 16px 16px;
+        background: var(--coffee-white);
+        border-top: 1px solid var(--coffee-border);
+    }
+
+    .coffee-mobile-menu.open {
+        display: block;
+    }
+
+    .coffee-mobile-menu a {
+        display: block;
+        margin-top: 8px;
+        padding: 13px 15px;
+        border-radius: 12px;
+        color: var(--coffee-text);
+        background: var(--coffee-light);
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .coffee-mobile-menu a:hover {
+        color: var(--coffee-white);
+        background: var(--coffee-primary);
+    }
+
+    @media (max-width: 950px) {
+        .coffee-nav {
+            display: none;
+        }
+
+        .coffee-menu-button {
+            display: grid;
+        }
+    }
+
+    @media (max-width: 560px) {
+        .coffee-header-container {
+            width: min(100% - 22px, 1180px);
+            min-height: 72px;
+            gap: 10px;
+        }
+
+        .coffee-announcement {
+            padding: 7px 12px;
+            font-size: 11px;
+        }
+
+        .coffee-logo-icon {
+            width: 42px;
+            height: 42px;
+            font-size: 20px;
+        }
+
+        .coffee-logo-text strong {
+            font-size: 17px;
+        }
+
+        .coffee-logo-text span {
+            display: none;
+        }
+
+        .coffee-action-button {
+            width: 39px;
+            height: 39px;
+        }
+
+        .coffee-user-button {
+            display: none;
+        }
+
+        .coffee-auth-link {
+            padding: 0 9px;
+            font-size: 11px;
+        }
+    }
+</style>
+
+<div class="coffee-announcement">
+    شحن مجاني للطلبات التي تتجاوز <strong>250 ريال</strong>
+    داخل المملكة العربية السعودية
+</div>
+
+<header class="coffee-header">
+    <div class="coffee-header-container">
+
+        <a href="{% url 'core:home' %}" class="coffee-logo" aria-label="العودة إلى الصفحة الرئيسية">
+            <span class="coffee-logo-icon" aria-hidden="true">☕</span>
+
+            <span class="coffee-logo-text">
+                <strong>مذاق البن</strong>
+                <span>قهوة مختارة بعناية</span>
+            </span>
+        </a>
+
+        <nav class="coffee-nav" aria-label="القائمة الرئيسية">
+            <a href="{% url 'core:home' %}" class="active">الرئيسية</a>
+            <a href="#coffee-products">منتجات القهوة</a>
+            <a href="#coffee-crops">محاصيل القهوة</a>
+            <a href="#coffee-tools">أدوات القهوة</a>
+            <a href="#coffee-about">عن المتجر</a>
+        </nav>
+
+        <div class="coffee-header-actions">
+            {% if request.user.is_authenticated %}
+                <form class="coffee-logout-form" method="post" action="{% url 'accounts:logout' %}">
+                    {% csrf_token %}
+                    <button class="coffee-auth-link" type="submit">تسجيل الخروج</button>
+                </form>
+            {% else %}
+                <a class="coffee-auth-link" href="{% url 'accounts:login' %}">تسجيل الدخول</a>
+                <a class="coffee-auth-link primary" href="{% url 'accounts:register' %}">إنشاء حساب</a>
+            {% endif %}
+
+            <button
+                class="coffee-action-button"
+                type="button"
+                aria-label="البحث"
+                title="البحث"
+                onclick="openCoffeeSearch()"
+            >
+                🔍
+            </button>
+
+            <a
+                href="#"
+                class="coffee-action-button"
+                aria-label="سلة المشتريات"
+                title="سلة المشتريات"
+            >
+                🛒
+                <span class="coffee-cart-count">0</span>
+            </a>
+
+            <button
+                id="coffeeMenuButton"
+                class="coffee-action-button coffee-menu-button"
+                type="button"
+                aria-label="فتح القائمة"
+                aria-expanded="false"
+                aria-controls="coffeeMobileMenu"
+            >
+                ☰
+            </button>
+        </div>
+    </div>
+
+    <nav
+        id="coffeeMobileMenu"
+        class="coffee-mobile-menu"
+        aria-label="قائمة الجوال"
+    >
+        <a href="{% url 'core:home' %}">الرئيسية</a>
+        {% if request.user.is_authenticated %}
+            <a href="{% url 'accounts:logout' %}">حسابي</a>
+        {% else %}
+            <a href="{% url 'accounts:login' %}">تسجيل الدخول</a>
+            <a href="{% url 'accounts:register' %}">إنشاء حساب</a>
+        {% endif %}
+        <a href="#coffee-products">منتجات القهوة</a>
+        <a href="#coffee-crops">محاصيل القهوة</a>
+        <a href="#coffee-tools">أدوات القهوة</a>
+        <a href="#coffee-about">عن المتجر</a>
+    </nav>
+</header>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const menuButton = document.getElementById("coffeeMenuButton");
+        const mobileMenu = document.getElementById("coffeeMobileMenu");
+
+        if (!menuButton || !mobileMenu) {
+            return;
+        }
+
+        menuButton.addEventListener("click", function () {
+            const isOpen = mobileMenu.classList.toggle("open");
+
+            menuButton.setAttribute("aria-expanded", String(isOpen));
+            menuButton.textContent = isOpen ? "✕" : "☰";
+        });
+
+        mobileMenu.querySelectorAll("a").forEach(function (link) {
+            link.addEventListener("click", function () {
+                mobileMenu.classList.remove("open");
+                menuButton.setAttribute("aria-expanded", "false");
+                menuButton.textContent = "☰";
+            });
+        });
+    });
+
+    function openCoffeeSearch() {
+        const searchInput = document.getElementById("mainCoffeeSearch");
+
+        if (searchInput) {
+            searchInput.scrollIntoView({
+                behavior: "smooth",
+                block: "center"
+            });
+
+            window.setTimeout(function () {
+                searchInput.focus();
+            }, 500);
+        }
+    }
+</script>

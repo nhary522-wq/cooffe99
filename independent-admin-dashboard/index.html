@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#17372d">
+  <title>مدار | إدارة مذاق البن</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">تجاوز إلى المحتوى</a>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar" aria-label="التنقل الرئيسي">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">م</div>
+        <div><strong>مـدار</strong><span>إدارة مذاق البن</span></div>
+        <button class="icon-btn sidebar-close" data-action="toggle-sidebar" aria-label="إغلاق القائمة">×</button>
+      </div>
+      <nav id="navigation"></nav>
+      <div class="sidebar-footer">
+        <div class="sync-dot"></div>
+        <div><strong>وضع تجريبي مستقل</strong><span>آخر حفظ: الآن</span></div>
+      </div>
+    </aside>
+    <div class="sidebar-overlay" data-action="toggle-sidebar"></div>
+
+    <section class="workspace">
+      <header class="topbar">
+        <div class="topbar-start">
+          <button class="icon-btn mobile-menu" data-action="toggle-sidebar" aria-label="فتح القائمة">☰</button>
+          <div>
+            <p class="eyebrow" id="breadcrumb">نظرة عامة</p>
+            <h1 id="pageTitle">صباح الخير، غانم</h1>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <button class="search-trigger" data-action="command">
+            <span>⌕</span><span>ابحث عن طلب، منتج أو عميل</span><kbd>Ctrl K</kbd>
+          </button>
+          <button class="icon-btn notification-btn" data-action="notifications" aria-label="الإشعارات">♢<i></i></button>
+          <button class="profile-btn" data-action="profile">
+            <span class="avatar">غن</span>
+            <span><strong>غانم نهاري</strong><small>مدير المنصة</small></span>
+            <b>⌄</b>
+          </button>
+        </div>
+      </header>
+
+      <main id="main" tabindex="-1"></main>
+    </section>
+  </div>
+
+  <div class="drawer" id="drawer" aria-hidden="true">
+    <div class="drawer-backdrop" data-action="close-drawer"></div>
+    <aside class="drawer-panel" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
+      <div class="drawer-head"><div><p class="eyebrow">التفاصيل</p><h2 id="drawerTitle"></h2></div><button class="icon-btn" data-action="close-drawer" aria-label="إغلاق">×</button></div>
+      <div id="drawerContent"></div>
+    </aside>
+  </div>
+
+  <div class="modal" id="modal" aria-hidden="true">
+    <div class="modal-backdrop" data-action="close-modal"></div>
+    <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-head"><div><p class="eyebrow" id="modalEyebrow">إضافة جديدة</p><h2 id="modalTitle"></h2></div><button class="icon-btn" data-action="close-modal" aria-label="إغلاق">×</button></div>
+      <form id="entityForm"><div id="modalFields"></div><div class="form-actions"><button type="button" class="btn secondary" data-action="close-modal">إلغاء</button><button class="btn primary" type="submit">حفظ التغييرات</button></div></form>
+    </section>
+  </div>
+
+  <div class="command" id="command" aria-hidden="true">
+    <div class="command-backdrop" data-action="close-command"></div>
+    <section class="command-card" role="dialog" aria-modal="true" aria-label="البحث الشامل">
+      <div class="command-input"><span>⌕</span><input id="globalSearch" autocomplete="off" placeholder="اكتب للبحث في المنصة..." aria-label="نص البحث"><kbd>ESC</kbd></div>
+      <div id="commandResults"></div>
+    </section>
+  </div>
+  <div id="toastRegion" class="toast-region" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
