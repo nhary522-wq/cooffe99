@@ -87,6 +87,11 @@ DATABASE_MODE = os.getenv(
 ).strip().lower()
 
 IS_PRODUCTION = DATABASE_MODE == "production"
+RENDER_EXTERNAL_HOSTNAME = os.getenv(
+    "RENDER_EXTERNAL_HOSTNAME",
+    "",
+).strip()
+IS_RENDER = bool(RENDER_EXTERNAL_HOSTNAME)
 
 
 # =============================================================================
@@ -100,19 +105,29 @@ SECRET_KEY = os.getenv(
 
 DEBUG = get_env_bool(
     "DJANGO_DEBUG",
-    default=not IS_PRODUCTION,
+    default=not (IS_PRODUCTION or IS_RENDER),
 )
+
+if IS_RENDER:
+    DEBUG = False
 
 ALLOWED_HOSTS = get_env_list(
     "DJANGO_ALLOWED_HOSTS",
-    default="127.0.0.1,localhost",
+    default="127.0.0.1,localhost,cooffe99.onrender.com",
 )
+
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 CSRF_TRUSTED_ORIGINS = get_env_list(
     "DJANGO_CSRF_TRUSTED_ORIGINS",
-    default="",
+    default="https://cooffe99.onrender.com",
 )
 
+if RENDER_EXTERNAL_HOSTNAME:
+    CSRF_TRUSTED_ORIGINS.append(
+        f"https://{RENDER_EXTERNAL_HOSTNAME}"
+    )
 
 # منع تشغيل الإنتاج بمفتاح Django الافتراضي
 if IS_PRODUCTION:
@@ -120,11 +135,6 @@ if IS_PRODUCTION:
         raise RuntimeError(
             "يجب تعيين DJANGO_SECRET_KEY آمن في بيئة الإنتاج."
         )
-
-ALLOWED_HOSTS = get_env_list(
-    "DJANGO_ALLOWED_HOSTS",
-    default="127.0.0.1,localhost",
-)
 
 # =============================================================================
 # التطبيقات المثبتة
