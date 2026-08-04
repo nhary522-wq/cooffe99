@@ -1,0 +1,50 @@
+{% extends "core/service_base.html" %}
+
+{% block title %}تتبع الطلب{% endblock %}
+{% block meta_description %}تتبع حالة طلبك وشحنتك من متجر A23 بأمان.{% endblock %}
+
+{% block content %}
+<main>
+    <section class="service-hero">
+        <span>تحديثات طلبك</span>
+        <h1>تتبع الطلب</h1>
+        <p>أدخل رقم الطلب ورقم الجوال المستخدم عند الشراء لعرض الحالة بأمان.</p>
+    </section>
+    <section class="service-container">
+        <form class="service-form" method="post">
+            {% csrf_token %}
+            <div class="service-field">
+                <label for="order_number">رقم الطلب</label>
+                <input id="order_number" name="order_number" value="{{ order_number }}" maxlength="40" placeholder="مثال: ORD-XXXXXXXXXXXX" required>
+            </div>
+            <div class="service-field">
+                <label for="phone">رقم الجوال</label>
+                <input id="phone" name="phone" value="{{ phone }}" maxlength="30" inputmode="tel" placeholder="05xxxxxxxx" required>
+            </div>
+            <button class="service-button" type="submit">عرض حالة الطلب</button>
+
+            {% if order %}
+                <article class="service-card track-result">
+                    <h2>الطلب {{ order.order_number }}</h2>
+                    <p>حالة الطلب: <span class="status-badge">{{ order.get_status_display }}</span></p>
+                    <p>حالة الدفع: {{ order.get_payment_status_display }}</p>
+                    <p>تاريخ الطلب: {{ order.placed_at|date:"Y/m/d - H:i" }}</p>
+                    {% if order.shipment %}
+                        <p>حالة الشحنة: {{ order.shipment.get_status_display }}</p>
+                        {% if order.shipment.tracking_number %}
+                            <p>رقم الشحنة: {{ order.shipment.tracking_number }}</p>
+                        {% endif %}
+                        {% if order.shipment.tracking_url %}
+                            <div class="service-actions">
+                                <a class="service-button outline" href="{{ order.shipment.tracking_url }}" rel="noopener noreferrer" target="_blank">التتبع لدى شركة الشحن</a>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                </article>
+            {% elif searched %}
+                <p class="service-note">لم نعثر على طلب مطابق. تأكد من رقم الطلب ورقم الجوال ثم حاول مجددًا.</p>
+            {% endif %}
+        </form>
+    </section>
+</main>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "core/service_base.html" %}
+
+{% block title %}تواصل معنا{% endblock %}
+{% block meta_description %}تواصل مع خدمة عملاء متجر A23 عبر الجوال أو البريد الإلكتروني.{% endblock %}
+
+{% block content %}
+<main>
+    <section class="service-hero">
+        <span>نحن بالقرب منك</span>
+        <h1>تواصل معنا</h1>
+        <p>يسعد فريق A23 بمساعدتك في الطلبات والمنتجات والشحن والاستبدال.</p>
+    </section>
+    <section class="service-container">
+        <div class="service-grid">
+            <article class="service-card">
+                <h2>اتصل بنا</h2>
+                <p dir="ltr">0556229463</p>
+                <div class="service-actions">
+                    <a class="service-button" href="tel:+966556229463">اتصال مباشر</a>
+                </div>
+            </article>
+            <article class="service-card">
+                <h2>البريد الإلكتروني</h2>
+                <p>nhary522@gmail.com</p>
+                <div class="service-actions">
+                    <a class="service-button" href="mailto:nhary522@gmail.com">إرسال بريد</a>
+                </div>
+            </article>
+        </div>
+        <div class="service-actions">
+            <a class="service-button outline" href="{% url 'core:faq' %}">الأسئلة الشائعة</a>
+            <a class="service-button outline" href="{% url 'core:track_order' %}">تتبع طلبك</a>
+        </div>
+    </section>
+</main>
+{% endblock %}

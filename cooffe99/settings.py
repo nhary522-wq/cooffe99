@@ -232,6 +232,7 @@ TEMPLATES = [
                     "django.contrib.messages."
                     "context_processors.messages"
                 ),
+                "core.context_processors.cart_summary",
             ],
         },
     },
@@ -509,6 +510,13 @@ SECURE_PROXY_SSL_HEADER = (
 # =============================================================================
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# =============================================================================
+# مساعد A23 الذكي
+# =============================================================================
+
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "").strip()
+OPENAI_CHAT_MODEL = os.getenv("OPENAI_CHAT_MODEL", "gpt-5.6-terra").strip()
 
 
 # =============================================================================

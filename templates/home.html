@@ -12,10 +12,10 @@
 
     <meta
         name="description"
-        content="متجر إلكتروني متخصص في بيع منتجات ومحاصيل وأدوات القهوة."
+        content="متجر إلكتروني متخصص في بيع محاصيل القهوة وأدوات التحضير."
     >
 
-    <title>مذاق البن | متجر القهوة المختصة</title>
+    <title>A23 | متجر القهوة المختصة</title>
 
     <style>
         /* =========================================
@@ -131,29 +131,48 @@
             display: flex;
             align-items: center;
             overflow: hidden;
-            background:
-                linear-gradient(
-                    90deg,
-                    rgba(33, 18, 10, 0.94) 0%,
-                    rgba(63, 36, 21, 0.82) 48%,
-                    rgba(63, 36, 21, 0.25) 100%
-                ),
-                url(
-                    "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1800&q=85"
-                )
-                center / cover no-repeat;
+            isolation: isolate;
+            background: var(--primary-dark);
+        }
+
+        .coffee-hero-video {
+            position: absolute;
+            inset: 0;
+            z-index: -2;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            transform: scale(1.015);
         }
 
         .coffee-hero::before {
             content: "";
             position: absolute;
             inset: 0;
+            z-index: -1;
             background:
+                linear-gradient(
+                    to left,
+                    rgba(31, 16, 8, 0.94) 0%,
+                    rgba(48, 26, 14, 0.82) 48%,
+                    rgba(48, 26, 14, 0.38) 100%
+                ),
                 radial-gradient(
                     circle at 18% 24%,
-                    rgba(217, 168, 120, 0.16),
-                    transparent 24%
+                    rgba(217, 168, 120, 0.2),
+                    transparent 30%
                 );
+            pointer-events: none;
+        }
+
+        .coffee-hero::after {
+            content: "";
+            position: absolute;
+            inset: auto 0 0;
+            z-index: -1;
+            height: 30%;
+            background: linear-gradient(to top, rgba(25, 12, 6, 0.45), transparent);
             pointer-events: none;
         }
 
@@ -354,7 +373,7 @@
 
         .coffee-category-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(2, 1fr);
             gap: 22px;
         }
 
@@ -457,6 +476,75 @@
         .coffee-product-card:hover {
             box-shadow: var(--shadow-lg);
             transform: translateY(-7px);
+        }
+
+        .coffee-text-card {
+            position: relative;
+            min-height: 330px;
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+            overflow: hidden;
+            border-top: 4px solid var(--secondary);
+        }
+
+        .coffee-card-image {
+            position: relative;
+            height: 175px;
+            overflow: hidden;
+            background: linear-gradient(145deg, #ead8c8, #caa27d);
+        }
+
+        .coffee-card-image::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(35, 18, 9, 0.24), transparent 55%);
+            pointer-events: none;
+        }
+
+        .coffee-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.45s ease;
+        }
+
+        .coffee-text-card:hover .coffee-card-image img {
+            transform: scale(1.07);
+        }
+
+        .coffee-card-body {
+            min-height: 151px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .coffee-text-card::after {
+            content: attr(data-card-number);
+            position: absolute;
+            left: 18px;
+            bottom: -16px;
+            color: rgba(111, 67, 40, 0.06);
+            font-size: 78px;
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        .coffee-text-card .coffee-product-title {
+            min-height: auto;
+            margin: 10px 0;
+            font-size: 20px;
+        }
+
+        .coffee-card-body > p:last-child {
+            position: relative;
+            z-index: 1;
+            margin: 0;
+            color: var(--muted);
+            font-size: 13px;
         }
 
         .coffee-product-image {
@@ -727,7 +815,10 @@
         @media (max-width: 800px) {
             .coffee-hero {
                 min-height: 620px;
-                background-position: 62% center;
+            }
+
+            .coffee-hero-video {
+                object-position: 58% center;
             }
 
             .coffee-category-grid {
@@ -812,6 +903,21 @@
 
         <!-- القسم الرئيسي -->
         <section class="coffee-hero">
+            <video
+                class="coffee-hero-video"
+                autoplay
+                muted
+                loop
+                playsinline
+                preload="metadata"
+                aria-hidden="true"
+            >
+                <source
+                    src="/media/cooffe%20Video.%20png.mp4"
+                    type="video/mp4"
+                >
+            </video>
+
             <div class="home-container">
                 <div class="coffee-hero-content">
 
@@ -826,24 +932,24 @@
 
                     <p class="coffee-hero-description">
                         اكتشف مجموعتنا المختارة من محاصيل القهوة المختصة،
-                        والمنتجات الطازجة، وأدوات التحضير التي تساعدك على
+                        والمحاصيل الطازجة، وأدوات التحضير التي تساعدك على
                         إعداد فنجان مثالي في كل مرة.
                     </p>
 
                     <div class="coffee-hero-actions">
                         <a
-                            href="#coffee-products"
+                            href="{% url 'catalog:crops' %}"
                             class="coffee-main-button primary"
                         >
-                            تسوق المنتجات
+                            تصفح المحاصيل
                             <span aria-hidden="true">←</span>
                         </a>
 
                         <a
-                            href="#coffee-crops"
+                            href="{% url 'catalog:tools' %}"
                             class="coffee-main-button outline"
                         >
-                            استكشف المحاصيل
+                            استكشف الأدوات
                         </a>
                     </div>
 
@@ -872,19 +978,21 @@
         <div class="coffee-search-wrapper">
             <div class="home-container">
                 <form
-                    id="mainCoffeeSearchForm"
+                    id="catalogCoffeeSearchForm"
                     class="coffee-search-box"
                     role="search"
-                    novalidate
+                    method="get"
+                    action="{% url 'catalog:product_list' %}"
                 >
                     <div class="coffee-search-input-wrapper">
                         <span aria-hidden="true">🔍</span>
 
                         <input
                             id="mainCoffeeSearch"
+                            name="q"
                             type="search"
-                            placeholder="ابحث عن محصول أو أداة أو منتج قهوة..."
-                            aria-label="البحث عن المنتجات"
+                            placeholder="ابحث عن محصول أو أداة قهوة..."
+                            aria-label="البحث عن المحاصيل والأدوات"
                             maxlength="100"
                             autocomplete="off"
                         >
@@ -901,388 +1009,76 @@
             </div>
         </div>
 
-        <!-- التصنيفات -->
-        <section id="coffee-crops" class="section-space">
+        <!-- أقسام المتجر -->
+        <section class="section-space">
             <div class="home-container">
-
                 <div class="section-heading">
-                    <span class="section-label">تسوق حسب القسم</span>
-
-                    <h2>كل ما تحتاجه لتجربة قهوة متكاملة</h2>
-
-                    <p>
-                        اختر من محاصيل القهوة المميزة ومنتجات التحضير
-                        والأدوات المصممة لتناسب المبتدئين والمحترفين.
-                    </p>
+                    <span class="section-label">أقسام المتجر</span>
+                    <h2>اختر ما يناسب فنجانك</h2>
+                    <p>قسمان مرتبان للوصول مباشرة إلى المحاصيل أو أدوات التحضير.</p>
                 </div>
-
                 <div class="coffee-category-grid">
-
                     <article class="coffee-category-card">
-                        <img
-                            src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=900&q=85"
-                            alt="حبوب ومحاصيل القهوة"
-                            loading="lazy"
-                        >
-
+                        <img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=900&q=85" alt="حبوب ومحاصيل القهوة" loading="lazy">
                         <div class="coffee-category-content">
                             <span>اختيارات طازجة</span>
                             <h3>محاصيل القهوة</h3>
-
-                            <p>
-                                محاصيل متنوعة بنكهات وإيحاءات مختلفة
-                                من أشهر مناطق زراعة القهوة.
-                            </p>
-
-                            <a href="#crop-collection">
-                                تصفح المحاصيل
-                                <span aria-hidden="true">←</span>
-                            </a>
+                            <p>محاصيل متنوعة بإيحاءات مختلفة من أشهر مناطق زراعة القهوة.</p>
+                            <a href="{% url 'catalog:crops' %}">عرض المحاصيل <span aria-hidden="true">←</span></a>
                         </div>
                     </article>
-
-                    <article
-                        id="coffee-products"
-                        class="coffee-category-card"
-                    >
-                        <img
-                            src="https://images.unsplash.com/photo-1498804103079-a6351b050096?auto=format&fit=crop&w=900&q=85"
-                            alt="منتجات القهوة"
-                            loading="lazy"
-                        >
-
-                        <div class="coffee-category-content">
-                            <span>نكهات مميزة</span>
-                            <h3>منتجات القهوة</h3>
-
-                            <p>
-                                خلطات مختارة ومنتجات تناسب القهوة
-                                اليومية والضيافة والمناسبات.
-                            </p>
-
-                            <a href="#">
-                                تصفح المنتجات
-                                <span aria-hidden="true">←</span>
-                            </a>
-                        </div>
-                    </article>
-
-                    <article
-                        id="coffee-tools"
-                        class="coffee-category-card"
-                    >
-                        <img
-                            src="https://images.unsplash.com/photo-1511081692775-05d0f180a065?auto=format&fit=crop&w=900&q=85"
-                            alt="أدوات تحضير القهوة"
-                            loading="lazy"
-                        >
-
+                    <article class="coffee-category-card">
+                        <img src="https://images.unsplash.com/photo-1511081692775-05d0f180a065?auto=format&fit=crop&w=900&q=85" alt="أدوات تحضير القهوة" loading="lazy">
                         <div class="coffee-category-content">
                             <span>تحضير احترافي</span>
                             <h3>أدوات القهوة</h3>
-
-                            <p>
-                                مطاحن وأدوات تقطير وأباريق وملحقات
-                                تساعدك على تحضير قهوتك بدقة.
-                            </p>
-
-                            <a href="#">
-                                تصفح الأدوات
-                                <span aria-hidden="true">←</span>
-                            </a>
-                        </div>
-                    </article>
-
-                </div>
-            </div>
-        </section>
-
-        <!-- مجموعة محاصيل القهوة -->
-        <section id="crop-collection" class="section-space coffee-products-section">
-            <div class="home-container">
-                <div class="section-heading">
-                    <span class="section-label">تصفح المحاصيل</span>
-                    <h2>محاصيل قهوة مختارة بعناية</h2>
-                    <p>أربعة محاصيل متنوعة بنكهات تناسب طرق التحضير المختلفة.</p>
-                </div>
-                <div class="coffee-products-grid">
-                    <article class="coffee-product-card" data-product-name="شلشلي إثيوبي">
-                        <div class="coffee-product-image">
-                            <span class="coffee-product-badge">إثيوبيا</span>
-                            <img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=700&q=85" alt="محصول شلشلي إثيوبي" loading="lazy">
-                        </div>
-                        <div class="coffee-product-content">
-                            <p class="coffee-product-category">محاصيل القهوة</p>
-                            <h3 class="coffee-product-title">شلشلي إثيوبي</h3>
-                            <p>إيحاءات فاكهية زاهية وقوام متوازن.</p>
-                        </div>
-                    </article>
-                    <article class="coffee-product-card" data-product-name="مزيج البهاء">
-                        <div class="coffee-product-image">
-                            <span class="coffee-product-badge">مزيج مميز</span>
-                            <img src="https://images.unsplash.com/photo-1497515114629-f71d768fd07c?auto=format&fit=crop&w=700&q=85" alt="محصول مزيج البهاء" loading="lazy">
-                        </div>
-                        <div class="coffee-product-content">
-                            <p class="coffee-product-category">محاصيل القهوة</p>
-                            <h3 class="coffee-product-title">مزيج البهاء</h3>
-                            <p>مزيج غني بنكهة الشوكولاتة والمكسرات.</p>
-                        </div>
-                    </article>
-                    <article class="coffee-product-card" data-product-name="بلقيس اليمن">
-                        <div class="coffee-product-image">
-                            <span class="coffee-product-badge">اليمن</span>
-                            <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=700&q=85" alt="محصول بلقيس اليمن" loading="lazy">
-                        </div>
-                        <div class="coffee-product-content">
-                            <p class="coffee-product-category">محاصيل القهوة</p>
-                            <h3 class="coffee-product-title">بلقيس اليمن</h3>
-                            <p>طابع يمني أصيل بإيحاءات التوابل والكاكاو.</p>
-                        </div>
-                    </article>
-                    <article class="coffee-product-card" data-product-name="روبي كلومبي">
-                        <div class="coffee-product-image">
-                            <span class="coffee-product-badge">كولومبيا</span>
-                            <img src="https://images.unsplash.com/photo-1442512595331-e89e73853f31?auto=format&fit=crop&w=700&q=85" alt="محصول روبي كلومبي" loading="lazy">
-                        </div>
-                        <div class="coffee-product-content">
-                            <p class="coffee-product-category">محاصيل القهوة</p>
-                            <h3 class="coffee-product-title">روبي كلومبي</h3>
-                            <p>حلاوة كراميل وحموضة ناعمة ونهاية نظيفة.</p>
+                            <p>كل ما تحتاجه للطحن والتقطير والوزن والتقديم بدقة.</p>
+                            <a href="{% url 'catalog:tools' %}">عرض الأدوات <span aria-hidden="true">←</span></a>
                         </div>
                     </article>
                 </div>
             </div>
         </section>
 
-        <!-- المنتجات الأكثر طلبًا -->
-        <section class="section-space coffee-products-section">
+        <!-- محاصيل القهوة -->
+        <section id="crop-collection" class="section-space coffee-products-section" hidden>
             <div class="home-container">
-
                 <div class="section-heading">
-                    <span class="section-label">الأكثر طلبًا</span>
-
-                    <h2>منتجات مختارة لعشاق القهوة</h2>
-
-                    <p>
-                        مجموعة تجريبية يمكنك ربطها لاحقًا بمنتجات
-                        قاعدة بيانات Django.
-                    </p>
+                    <span class="section-label">محاصيل القهوة</span>
+                    <h2>تصفح جميع المحاصيل</h2>
+                    <p>مجموعة مرتبة من المحاصيل المختارة، مع صورة ووصف مختصر لكل محصول.</p>
                 </div>
-
                 <div class="coffee-products-grid">
+                    <article class="coffee-product-card coffee-text-card" data-card-number="01" data-product-name="شلشلي إثيوبي"><div class="coffee-card-image"><img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=700&q=85" alt="حبوب محصول شلشلي إثيوبي" loading="lazy"></div><div class="coffee-card-body"><div><p class="coffee-product-category">إثيوبيا</p><h3 class="coffee-product-title">شلشلي إثيوبي</h3></div><p>إيحاءات فاكهية زاهية وقوام متوازن.</p></div></article>
+                    <article class="coffee-product-card coffee-text-card" data-card-number="02" data-product-name="مزيج البهاء"><div class="coffee-card-image"><img src="https://images.unsplash.com/photo-1497515114629-f71d768fd07c?auto=format&fit=crop&w=700&q=85" alt="حبوب محصول مزيج البهاء" loading="lazy"></div><div class="coffee-card-body"><div><p class="coffee-product-category">مزيج مميز</p><h3 class="coffee-product-title">مزيج البهاء</h3></div><p>نكهات الشوكولاتة والمكسرات بلمسة حلوة.</p></div></article>
+                    <article class="coffee-product-card coffee-text-card" data-card-number="03" data-product-name="بلقيس اليمن"><div class="coffee-card-image"><img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=700&q=85" alt="قهوة محصول بلقيس اليمن" loading="lazy"></div><div class="coffee-card-body"><div><p class="coffee-product-category">اليمن</p><h3 class="coffee-product-title">بلقيس اليمن</h3></div><p>طابع يمني أصيل بإيحاءات التوابل والكاكاو.</p></div></article>
+                    <article class="coffee-product-card coffee-text-card" data-card-number="04" data-product-name="روبي كلومبي"><div class="coffee-card-image"><img src="https://images.unsplash.com/photo-1442512595331-e89e73853f31?auto=format&fit=crop&w=700&q=85" alt="حبوب محصول روبي كلومبي" loading="lazy"></div><div class="coffee-card-body"><div><p class="coffee-product-category">كولومبيا</p><h3 class="coffee-product-title">روبي كلومبي</h3></div><p>حلاوة كراميل وحموضة ناعمة ونهاية نظيفة.</p></div></article>
+                    <article class="coffee-product-card coffee-text-card" data-card-number="05" data-product-name="قوجي إثيوبي"><div class="coffee-card-image"><img src="https://images.unsplash.com/photo-1559056199-641a0ac8b55e?auto=format&fit=crop&w=700&q=85" alt="حبوب محصول قوجي إثيوبي" loading="lazy"></div><div class="coffee-card-body"><div><p class="coffee-product-category">إثيوبيا</p><h3 class="coffee-product-title">قوجي إثيوبي</h3></div><p>زهور وفواكه استوائية وحموضة مشرقة.</p></div></article>
+                    <article class="coffee-product-card coffee-text-card" data-card-number="06" data-product-name="سدرة جازان"><div class="coffee-card-image"><img src="https://images.unsplash.com/photo-1498804103079-a6351b050096?auto=format&fit=crop&w=700&q=85" alt="حبوب محصول سدرة جازان" loading="lazy"></div><div class="coffee-card-body"><div><p class="coffee-product-category">السعودية</p><h3 class="coffee-product-title">سدرة جازان</h3></div><p>محصول محلي بطابع غني وإيحاءات دافئة.</p></div></article>
+                    <article class="coffee-product-card coffee-text-card" data-card-number="07" data-product-name="كينيا نيري"><div class="coffee-card-image"><img src="https://images.unsplash.com/photo-1512568400610-62da28bc8a13?auto=format&fit=crop&w=700&q=85" alt="حبوب محصول كينيا نيري" loading="lazy"></div><div class="coffee-card-body"><div><p class="coffee-product-category">كينيا</p><h3 class="coffee-product-title">كينيا نيري</h3></div><p>حموضة عصيرية وإيحاءات التوت الأحمر.</p></div></article>
+                    <article class="coffee-product-card coffee-text-card" data-card-number="08" data-product-name="برازيلي سانتوس"><div class="coffee-card-image"><img src="https://images.unsplash.com/photo-1442550528053-c431ecb55509?auto=format&fit=crop&w=700&q=85" alt="حبوب محصول برازيلي سانتوس" loading="lazy"></div><div class="coffee-card-body"><div><p class="coffee-product-category">البرازيل</p><h3 class="coffee-product-title">برازيلي سانتوس</h3></div><p>قوام كريمي ونكهات كاكاو وبندق.</p></div></article>
+                </div>
+            </div>
+        </section>
 
-                    <article
-                        class="coffee-product-card"
-                        data-product-name="محصول إثيوبي قوجي"
-                    >
-                        <div class="coffee-product-image">
-                            <span class="coffee-product-badge">الأكثر مبيعًا</span>
-
-                            <button
-                                class="coffee-favorite-button"
-                                type="button"
-                                aria-label="إضافة إلى المفضلة"
-                            >
-                                ♡
-                            </button>
-
-                            <img
-                                src="https://images.unsplash.com/photo-1559056199-641a0ac8b55e?auto=format&fit=crop&w=700&q=85"
-                                alt="محصول قهوة إثيوبي"
-                                loading="lazy"
-                            >
-                        </div>
-
-                        <div class="coffee-product-content">
-                            <p class="coffee-product-category">
-                                محاصيل القهوة
-                            </p>
-
-                            <h3 class="coffee-product-title">
-                                محصول إثيوبي قوجي بإيحاءات فاكهية
-                            </h3>
-
-                            <div class="coffee-product-rating">
-                                ★★★★★
-                                <small>(42 تقييمًا)</small>
-                            </div>
-
-                            <div class="coffee-product-footer">
-                                <p class="coffee-product-price">
-                                    65
-                                    <small>ريال</small>
-                                </p>
-
-                                <button
-                                    class="coffee-add-cart"
-                                    type="button"
-                                    aria-label="إضافة محصول إثيوبي إلى السلة"
-                                >
-                                    🛒
-                                </button>
-                            </div>
-                        </div>
-                    </article>
-
-                    <article
-                        class="coffee-product-card"
-                        data-product-name="مطحنة قهوة يدوية"
-                    >
-                        <div class="coffee-product-image">
-                            <span class="coffee-product-badge">جديد</span>
-
-                            <button
-                                class="coffee-favorite-button"
-                                type="button"
-                                aria-label="إضافة إلى المفضلة"
-                            >
-                                ♡
-                            </button>
-
-                            <img
-                                src="https://images.unsplash.com/photo-1575444758702-4a6b9222336e?auto=format&fit=crop&w=700&q=85"
-                                alt="مطحنة قهوة يدوية"
-                                loading="lazy"
-                            >
-                        </div>
-
-                        <div class="coffee-product-content">
-                            <p class="coffee-product-category">
-                                أدوات القهوة
-                            </p>
-
-                            <h3 class="coffee-product-title">
-                                مطحنة قهوة يدوية بدرجات طحن متعددة
-                            </h3>
-
-                            <div class="coffee-product-rating">
-                                ★★★★★
-                                <small>(31 تقييمًا)</small>
-                            </div>
-
-                            <div class="coffee-product-footer">
-                                <p class="coffee-product-price">
-                                    119
-                                    <small>ريال</small>
-                                </p>
-
-                                <button
-                                    class="coffee-add-cart"
-                                    type="button"
-                                    aria-label="إضافة مطحنة القهوة إلى السلة"
-                                >
-                                    🛒
-                                </button>
-                            </div>
-                        </div>
-                    </article>
-
-                    <article
-                        class="coffee-product-card"
-                        data-product-name="أداة تقطير زجاجية"
-                    >
-                        <div class="coffee-product-image">
-                            <span class="coffee-product-badge">مميز</span>
-
-                            <button
-                                class="coffee-favorite-button"
-                                type="button"
-                                aria-label="إضافة إلى المفضلة"
-                            >
-                                ♡
-                            </button>
-
-                            <img
-                                src="https://images.unsplash.com/photo-1545665225-b23b99e4d45e?auto=format&fit=crop&w=700&q=85"
-                                alt="أداة تقطير القهوة"
-                                loading="lazy"
-                            >
-                        </div>
-
-                        <div class="coffee-product-content">
-                            <p class="coffee-product-category">
-                                أدوات التحضير
-                            </p>
-
-                            <h3 class="coffee-product-title">
-                                أداة تقطير زجاجية لتحضير القهوة المختصة
-                            </h3>
-
-                            <div class="coffee-product-rating">
-                                ★★★★★
-                                <small>(26 تقييمًا)</small>
-                            </div>
-
-                            <div class="coffee-product-footer">
-                                <p class="coffee-product-price">
-                                    89
-                                    <small>ريال</small>
-                                </p>
-
-                                <button
-                                    class="coffee-add-cart"
-                                    type="button"
-                                    aria-label="إضافة أداة التقطير إلى السلة"
-                                >
-                                    🛒
-                                </button>
-                            </div>
-                        </div>
-                    </article>
-
-                    <article
-                        class="coffee-product-card"
-                        data-product-name="كوب قهوة خزفي"
-                    >
-                        <div class="coffee-product-image">
-                            <span class="coffee-product-badge">عرض</span>
-
-                            <button
-                                class="coffee-favorite-button"
-                                type="button"
-                                aria-label="إضافة إلى المفضلة"
-                            >
-                                ♡
-                            </button>
-
-                            <img
-                                src="https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?auto=format&fit=crop&w=700&q=85"
-                                alt="كوب قهوة خزفي"
-                                loading="lazy"
-                            >
-                        </div>
-
-                        <div class="coffee-product-content">
-                            <p class="coffee-product-category">
-                                أكواب القهوة
-                            </p>
-
-                            <h3 class="coffee-product-title">
-                                كوب قهوة خزفي بتصميم بسيط وأنيق
-                            </h3>
-
-                            <div class="coffee-product-rating">
-                                ★★★★★
-                                <small>(18 تقييمًا)</small>
-                            </div>
-
-                            <div class="coffee-product-footer">
-                                <p class="coffee-product-price">
-                                    39
-                                    <small>ريال</small>
-                                </p>
-
-                                <button
-                                    class="coffee-add-cart"
-                                    type="button"
-                                    aria-label="إضافة كوب القهوة إلى السلة"
-                                >
-                                    🛒
-                                </button>
-                            </div>
-                        </div>
-                    </article>
-
+        <!-- أدوات القهوة -->
+        <section id="tools-collection" class="section-space" hidden>
+            <div class="home-container">
+                <div class="section-heading">
+                    <span class="section-label">أدوات القهوة</span>
+                    <h2>كل أدوات التحضير في مكان واحد</h2>
+                    <p>مطاحن وأدوات تقطير وأباريق وملحقات تساعدك على تحضير قهوتك بدقة.</p>
+                </div>
+                <div class="coffee-products-grid">
+                    <article class="coffee-product-card coffee-text-card" data-card-number="01" data-product-name="أكواب إسبريسو"><div class="coffee-card-image"><img src="https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?auto=format&fit=crop&w=700&q=85" alt="أكواب إسبريسو" loading="lazy"></div><div class="coffee-card-body"><div><p class="coffee-product-category">التقديم</p><h3 class="coffee-product-title">أكواب إسبريسو</h3></div><p>أكواب مناسبة لتقديم جرعات الإسبريسو بأناقة.</p></div></article>
+                    <article class="coffee-product-card coffee-text-card" data-card-number="02" data-product-name="مطحنة يدوية"><div class="coffee-card-image"><img src="https://images.unsplash.com/photo-1575444758702-4a6b9222336e?auto=format&fit=crop&w=700&q=85" alt="مطحنة قهوة يدوية" loading="lazy"></div><div class="coffee-card-body"><div><p class="coffee-product-category">الطحن</p><h3 class="coffee-product-title">مطحنة يدوية</h3></div><p>تحكم عملي بدرجات الطحن لمختلف طرق التحضير.</p></div></article>
+                    <article class="coffee-product-card coffee-text-card" data-card-number="03" data-product-name="قمع تقطير"><div class="coffee-card-image"><img src="https://images.unsplash.com/photo-1545665225-b23b99e4d45e?auto=format&fit=crop&w=700&q=85" alt="قمع تقطير القهوة" loading="lazy"></div><div class="coffee-card-body"><div><p class="coffee-product-category">التقطير</p><h3 class="coffee-product-title">قمع تقطير</h3></div><p>استخلاص متوازن وواضح للقهوة المقطرة.</p></div></article>
+                    <article class="coffee-product-card coffee-text-card" data-card-number="04" data-product-name="ميزان قهوة"><div class="coffee-card-image"><img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=700&q=85" alt="ميزان قهوة للتحضير" loading="lazy"></div><div class="coffee-card-body"><div><p class="coffee-product-category">الدقة</p><h3 class="coffee-product-title">ميزان قهوة</h3></div><p>قياس دقيق للقهوة والماء ووقت الاستخلاص.</p></div></article>
+                    <article class="coffee-product-card coffee-text-card" data-card-number="05" data-product-name="فلاتر جميع المقاسات"><div class="coffee-card-image"><img src="https://images.unsplash.com/photo-1511081692775-05d0f180a065?auto=format&fit=crop&w=700&q=85" alt="فلاتر قهوة بمقاسات مختلفة" loading="lazy"></div><div class="coffee-card-body"><div><p class="coffee-product-category">الفلاتر</p><h3 class="coffee-product-title">فلاتر جميع المقاسات</h3></div><p>مقاسات متنوعة تناسب أدوات التقطير المختلفة.</p></div></article>
+                    <article class="coffee-product-card coffee-text-card" data-card-number="06" data-product-name="مطاحن القهوة"><div class="coffee-card-image"><img src="https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=700&q=85" alt="مطاحن القهوة" loading="lazy"></div><div class="coffee-card-body"><div><p class="coffee-product-category">الطحن</p><h3 class="coffee-product-title">مطاحن القهوة</h3></div><p>خيارات طحن متعددة لتحضير متسق كل مرة.</p></div></article>
+                    <article class="coffee-product-card coffee-text-card" data-card-number="07" data-product-name="أدوات التقطير"><div class="coffee-card-image"><img src="https://images.unsplash.com/photo-1499961524705-bfd103e65a6d?auto=format&fit=crop&w=700&q=85" alt="أدوات تقطير القهوة" loading="lazy"></div><div class="coffee-card-body"><div><p class="coffee-product-category">التحضير</p><h3 class="coffee-product-title">أدوات التقطير</h3></div><p>أدوات متنوعة لطرق التقطير اليدوي.</p></div></article>
+                    <article class="coffee-product-card coffee-text-card" data-card-number="08" data-product-name="أباريق التحضير"><div class="coffee-card-image"><img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=700&q=85" alt="أباريق تحضير القهوة" loading="lazy"></div><div class="coffee-card-body"><div><p class="coffee-product-category">الصب</p><h3 class="coffee-product-title">أباريق التحضير</h3></div><p>تحكم أفضل في تدفق الماء أثناء التحضير.</p></div></article>
+                    <article class="coffee-product-card coffee-text-card" data-card-number="09" data-product-name="ملحقات القهوة"><div class="coffee-card-image"><img src="https://images.unsplash.com/photo-1521302080334-4bebac2763a6?auto=format&fit=crop&w=700&q=85" alt="ملحقات تحضير القهوة" loading="lazy"></div><div class="coffee-card-body"><div><p class="coffee-product-category">الملحقات</p><h3 class="coffee-product-title">ملحقات القهوة</h3></div><p>قطع مساعدة لتنظيم وتحسين تجربة التحضير.</p></div></article>
                 </div>
             </div>
         </section>
@@ -1308,7 +1104,7 @@
                         </p>
 
                         <a
-                            href="#coffee-products"
+                            href="{% url 'catalog:product_list' %}"
                             class="coffee-main-button primary"
                         >
                             اكتشف العرض
@@ -1330,8 +1126,8 @@
                     <h2>نهتم بكل تفاصيل فنجانك</h2>
 
                     <p>
-                        نحرص على تقديم منتجات موثوقة وتجربة شراء
-                        سهلة منذ اختيار المنتج وحتى وصوله إليك.
+                        نحرص على تقديم محاصيل وأدوات موثوقة وتجربة شراء
+                        سهلة منذ الاختيار وحتى وصول الطلب إليك.
                     </p>
                 </div>
 
@@ -1350,7 +1146,7 @@
                         <div class="coffee-benefit-icon">🔥</div>
                         <h3>تحميص حديث</h3>
                         <p>
-                            نوفر منتجات محمصة حديثًا للمحافظة
+                            نوفر محاصيل محمصة حديثًا للمحافظة
                             على النكهة والرائحة.
                         </p>
                     </article>
@@ -1449,7 +1245,7 @@
 
                     if (!query) {
                         searchResult.textContent =
-                            "يرجى كتابة اسم المنتج الذي تبحث عنه.";
+                            "يرجى كتابة اسم المحصول أو الأداة التي تبحث عنها.";
 
                         searchResult.classList.add("show");
                         searchInput.focus();
@@ -1475,7 +1271,7 @@
                         searchResult.textContent =
                             "تم العثور على " +
                             matchingProducts.length +
-                            " منتج مطابق لبحثك عن: " +
+                            " نتيجة مطابقة لبحثك عن: " +
                             query;
 
                         matchingProducts[0].scrollIntoView({
@@ -1484,7 +1280,7 @@
                         });
                     } else {
                         searchResult.textContent =
-                            "لم نجد منتجًا مطابقًا لعبارة: " +
+                            "لم نجد محصولًا أو أداة مطابقة لعبارة: " +
                             query +
                             ". جرّب البحث بكلمة أقصر.";
                     }

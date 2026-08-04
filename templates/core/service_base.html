@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="{% block meta_description %}خدمة عملاء متجر A23{% endblock %}">
+    <title>{% block title %}خدمة العملاء{% endblock %} | A23</title>
+    <style>
+        :root{--primary:#6f4328;--dark:#3f2415;--accent:#d9a878;--light:#f8f2ec;--white:#fff;--text:#33241c;--muted:#7f6c60;--border:#eaded4;--shadow:0 18px 50px rgba(63,36,21,.12)}
+        *{box-sizing:border-box}body{margin:0;color:var(--text);background:var(--light);font-family:Tahoma,Arial,"Segoe UI",sans-serif;line-height:1.8}a{color:inherit}.service-hero{padding:80px 20px 65px;color:#fff;text-align:center;background:linear-gradient(135deg,rgba(63,36,21,.96),rgba(111,67,40,.88))}.service-hero span{color:#ecc8a8;font-size:13px;font-weight:900}.service-hero h1{margin:8px 0 10px;font-size:clamp(32px,5vw,52px)}.service-hero p{max-width:680px;margin:auto;color:#eaded4}.service-container{width:min(1020px,calc(100% - 28px));margin:0 auto;padding:55px 0 80px}.service-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}.service-card{padding:26px;border:1px solid var(--border);border-radius:20px;background:var(--white);box-shadow:0 8px 24px rgba(63,36,21,.06)}.service-card h2,.service-card h3{margin:0 0 10px;color:var(--dark)}.service-card p{margin:0;color:var(--muted)}.service-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}.service-button{min-height:48px;padding:0 20px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--primary);border-radius:12px;color:#fff;background:var(--primary);text-decoration:none;font-weight:900}.service-button.outline{color:var(--primary);background:#fff}.service-form{max-width:680px;margin:auto;padding:28px;border:1px solid var(--border);border-radius:22px;background:#fff;box-shadow:var(--shadow)}.service-field{margin-bottom:17px}.service-field label{display:block;margin-bottom:7px;font-weight:900}.service-field input{width:100%;height:52px;padding:0 14px;border:1px solid #d9c8bc;border-radius:12px;font:inherit}.service-field input:focus{border-color:var(--primary);outline:3px solid rgba(111,67,40,.1)}.track-result{margin-top:24px}.status-badge{display:inline-block;padding:6px 12px;border-radius:999px;color:#fff;background:#34785b;font-weight:900}.service-note{margin-top:18px;padding:15px;border-radius:12px;color:#7b2424;background:#fff0f0}@media(max-width:700px){.service-grid{grid-template-columns:1fr}.service-hero{padding:60px 16px 50px}.service-container{padding-top:35px}}
+    </style>
+</head>
+<body>
+    {% include "header.html" %}
+    {% block content %}{% endblock %}
+    {% include "footer.html" %}
+</body>
+</html>

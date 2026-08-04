@@ -1,0 +1,28 @@
+{% extends "core/service_base.html" %}
+
+{% block title %}{{ page_title }}{% endblock %}
+{% block meta_description %}{{ page_description }}{% endblock %}
+
+{% block content %}
+<main>
+    <section class="service-hero">
+        <span>خدمة عملاء A23</span>
+        <h1>{{ page_title }}</h1>
+        <p>{{ page_description }}</p>
+    </section>
+    <section class="service-container">
+        <div class="service-grid">
+            {% for section in sections %}
+                <article class="service-card">
+                    <h2>{{ section.title }}</h2>
+                    <p>{{ section.content }}</p>
+                </article>
+            {% endfor %}
+        </div>
+        <div class="service-actions">
+            <a class="service-button" href="{% url 'core:contact' %}">تحتاج مساعدة؟ تواصل معنا</a>
+            <a class="service-button outline" href="{% url 'core:home' %}">العودة إلى المتجر</a>
+        </div>
+    </section>
+</main>
+{% endblock %}

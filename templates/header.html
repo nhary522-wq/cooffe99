@@ -84,8 +84,19 @@
     }
 
     .coffee-logo-text strong {
-        font-size: 21px;
+        width: fit-content;
+        color: transparent;
+        background: linear-gradient(135deg, #3f2415 15%, #b87843 50%, #5a301c 85%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 28px;
+        font-style: italic;
         font-weight: 900;
+        letter-spacing: 0.12em;
+        line-height: 1;
+        text-shadow: 0 5px 16px rgba(111, 67, 40, 0.18);
+        transform: skewX(-7deg);
     }
 
     .coffee-logo-text span {
@@ -293,7 +304,7 @@
 </style>
 
 <div class="coffee-announcement">
-    شحن مجاني للطلبات التي تتجاوز <strong>250 ريال</strong>
+    شحن مجاني للطلبات التي تتجاوز <strong>150 ريال</strong>
     داخل المملكة العربية السعودية
 </div>
 
@@ -304,16 +315,16 @@
             <span class="coffee-logo-icon" aria-hidden="true">☕</span>
 
             <span class="coffee-logo-text">
-                <strong>مذاق البن</strong>
+                <strong dir="ltr">A23</strong>
                 <span>قهوة مختارة بعناية</span>
             </span>
         </a>
 
         <nav class="coffee-nav" aria-label="القائمة الرئيسية">
             <a href="{% url 'core:home' %}" class="active">الرئيسية</a>
-            <a href="#coffee-products">منتجات القهوة</a>
-            <a href="#coffee-crops">محاصيل القهوة</a>
-            <a href="#coffee-tools">أدوات القهوة</a>
+            <a href="{% url 'catalog:product_list' %}">منتجات القهوة</a>
+            <a href="{% url 'catalog:crops' %}">محاصيل القهوة</a>
+            <a href="{% url 'catalog:tools' %}">أدوات القهوة</a>
             <a href="#coffee-about">عن المتجر</a>
         </nav>
 
@@ -339,13 +350,13 @@
             </button>
 
             <a
-                href="#"
+                href="{% url 'orders:cart' %}"
                 class="coffee-action-button"
                 aria-label="سلة المشتريات"
                 title="سلة المشتريات"
             >
                 🛒
-                <span class="coffee-cart-count">0</span>
+                <span class="coffee-cart-count">{{ cart_item_count }}</span>
             </a>
 
             <button
@@ -373,9 +384,9 @@
             <a href="{% url 'accounts:login' %}">تسجيل الدخول</a>
             <a href="{% url 'accounts:register' %}">إنشاء حساب</a>
         {% endif %}
-        <a href="#coffee-products">منتجات القهوة</a>
-        <a href="#coffee-crops">محاصيل القهوة</a>
-        <a href="#coffee-tools">أدوات القهوة</a>
+        <a href="{% url 'catalog:product_list' %}">منتجات القهوة</a>
+        <a href="{% url 'catalog:crops' %}">محاصيل القهوة</a>
+        <a href="{% url 'catalog:tools' %}">أدوات القهوة</a>
         <a href="#coffee-about">عن المتجر</a>
     </nav>
 </header>

@@ -65,8 +65,17 @@
     }
 
     .coffee-footer-logo strong {
-        font-size: 22px;
+        color: transparent;
+        background: linear-gradient(135deg, #ffffff 15%, #e7b887 52%, #ffffff 88%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 29px;
+        font-style: italic;
         font-weight: 900;
+        letter-spacing: 0.12em;
+        line-height: 1;
+        transform: skewX(-7deg);
     }
 
     .coffee-footer-description {
@@ -278,11 +287,11 @@
                         ☕
                     </span>
 
-                    <strong>مذاق البن</strong>
+                    <strong dir="ltr">A23</strong>
                 </a>
 
                 <p class="coffee-footer-description">
-                    متجر إلكتروني متخصص في توفير أجود محاصيل ومنتجات
+                    متجر إلكتروني متخصص في توفير أجود محاصيل
                     القهوة وأدوات التحضير، لنمنحك تجربة قهوة مميزة
                     تبدأ من اختيار الحبة وتنتهي بفنجان متقن.
                 </p>
@@ -300,9 +309,9 @@
 
                 <div class="coffee-footer-links">
                     <a href="/">الرئيسية</a>
-                    <a href="#coffee-products">المنتجات</a>
-                    <a href="#coffee-crops">محاصيل القهوة</a>
-                    <a href="#coffee-tools">أدوات التحضير</a>
+                    <a href="{% url 'catalog:product_list' %}">منتجات القهوة</a>
+                    <a href="{% url 'catalog:crops' %}">محاصيل القهوة</a>
+                    <a href="{% url 'catalog:tools' %}">أدوات التحضير</a>
                     <a href="#coffee-about">عن المتجر</a>
                 </div>
             </div>
@@ -311,11 +320,11 @@
                 <h3>خدمة العملاء</h3>
 
                 <div class="coffee-footer-links">
-                    <a href="#">تواصل معنا</a>
-                    <a href="#">الأسئلة الشائعة</a>
-                    <a href="#">سياسة الشحن</a>
-                    <a href="#">الاستبدال والاسترجاع</a>
-                    <a href="#">تتبع الطلب</a>
+                    <a href="{% url 'core:contact' %}">تواصل معنا</a>
+                    <a href="{% url 'core:faq' %}">الأسئلة الشائعة</a>
+                    <a href="{% url 'core:shipping_policy' %}">سياسة الشحن</a>
+                    <a href="{% url 'core:return_policy' %}">الاستبدال والاسترجاع</a>
+                    <a href="{% url 'core:track_order' %}">تتبع الطلب</a>
                 </div>
             </div>
 
@@ -330,12 +339,12 @@
 
                     <div class="coffee-contact-item">
                         <span class="coffee-contact-icon">☎</span>
-                        <span dir="ltr">+966 50 000 0000</span>
+                        <a href="tel:+966556229463" dir="ltr">0556229463</a>
                     </div>
 
                     <div class="coffee-contact-item">
                         <span class="coffee-contact-icon">✉</span>
-                        <span>info@example.com</span>
+                        <a href="mailto:nhary522@gmail.com">nhary522@gmail.com</a>
                     </div>
                 </div>
 
@@ -371,7 +380,7 @@
             <p>
                 جميع الحقوق محفوظة ©
                 <span id="coffeeCurrentYear"></span>
-                متجر مذاق البن
+                متجر A23
             </p>
 
             <div class="coffee-footer-policy-links">
@@ -432,6 +441,386 @@
                 "تم تسجيل بريدك بنجاح في القائمة البريدية.";
 
             newsletterForm.reset();
+        });
+    });
+</script>
+
+<style>
+    .a23-ai-widget {
+        position: fixed;
+        right: 22px;
+        bottom: 22px;
+        z-index: 1600;
+        direction: rtl;
+        font-family: Tahoma, Arial, "Segoe UI", sans-serif;
+    }
+
+    .a23-ai-toggle {
+        width: 62px;
+        height: 62px;
+        display: grid;
+        place-items: center;
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        border-radius: 20px;
+        color: #fff;
+        background: linear-gradient(145deg, #a86f47, #3f2415);
+        box-shadow: 0 16px 38px rgba(44, 24, 13, 0.3);
+        cursor: pointer;
+        font-size: 26px;
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .a23-ai-toggle:hover {
+        transform: translateY(-4px) scale(1.03);
+        box-shadow: 0 20px 45px rgba(44, 24, 13, 0.38);
+    }
+
+    .a23-ai-panel {
+        position: absolute;
+        right: 0;
+        bottom: 76px;
+        width: min(390px, calc(100vw - 28px));
+        overflow: hidden;
+        border: 1px solid #eaded4;
+        border-radius: 24px;
+        background: #fff;
+        box-shadow: 0 28px 75px rgba(38, 20, 11, 0.3);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(14px) scale(0.97);
+        transform-origin: bottom right;
+        transition: 0.25s ease;
+    }
+
+    .a23-ai-panel.open {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0) scale(1);
+    }
+
+    .a23-ai-header {
+        padding: 17px 18px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        color: #fff;
+        background: linear-gradient(135deg, #3f2415, #74452a);
+    }
+
+    .a23-ai-identity {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+    }
+
+    .a23-ai-avatar {
+        width: 42px;
+        height: 42px;
+        display: grid;
+        place-items: center;
+        border-radius: 14px;
+        color: #3f2415;
+        background: #e8c4a3;
+        font-size: 20px;
+    }
+
+    .a23-ai-title strong,
+    .a23-ai-title span {
+        display: block;
+    }
+
+    .a23-ai-title strong {
+        font-size: 15px;
+    }
+
+    .a23-ai-title span {
+        margin-top: 3px;
+        color: #ddcabc;
+        font-size: 11px;
+    }
+
+    .a23-ai-title span::before {
+        content: "";
+        width: 7px;
+        height: 7px;
+        display: inline-block;
+        margin-left: 6px;
+        border-radius: 50%;
+        background: #69d39b;
+        box-shadow: 0 0 0 4px rgba(105, 211, 155, 0.12);
+    }
+
+    .a23-ai-close {
+        width: 34px;
+        height: 34px;
+        border: 0;
+        border-radius: 10px;
+        color: #fff;
+        background: rgba(255, 255, 255, 0.1);
+        cursor: pointer;
+        font-size: 18px;
+    }
+
+    .a23-ai-messages {
+        height: 330px;
+        padding: 18px;
+        overflow-y: auto;
+        background: linear-gradient(180deg, #fffaf6, #fff);
+    }
+
+    .a23-ai-message {
+        max-width: 86%;
+        margin-bottom: 12px;
+        padding: 11px 13px;
+        border-radius: 15px;
+        color: #33241c;
+        background: #f2e8df;
+        font-size: 13px;
+        line-height: 1.75;
+        white-space: pre-wrap;
+    }
+
+    .a23-ai-message.user {
+        margin-right: auto;
+        color: #fff;
+        background: #6f4328;
+        border-bottom-left-radius: 5px;
+    }
+
+    .a23-ai-message.assistant {
+        border-bottom-right-radius: 5px;
+    }
+
+    .a23-ai-message.typing {
+        width: fit-content;
+        color: #806f64;
+    }
+
+    .a23-ai-suggestions {
+        padding: 0 14px 12px;
+        display: flex;
+        gap: 7px;
+        overflow-x: auto;
+        background: #fff;
+    }
+
+    .a23-ai-suggestion {
+        flex: 0 0 auto;
+        padding: 7px 10px;
+        border: 1px solid #eaded4;
+        border-radius: 999px;
+        color: #6f4328;
+        background: #fff;
+        font: inherit;
+        font-size: 11px;
+        font-weight: 800;
+        cursor: pointer;
+    }
+
+    .a23-ai-form {
+        padding: 12px;
+        display: grid;
+        grid-template-columns: 1fr 44px;
+        gap: 8px;
+        border-top: 1px solid #eaded4;
+        background: #fff;
+    }
+
+    .a23-ai-input {
+        min-width: 0;
+        height: 46px;
+        padding: 0 13px;
+        border: 1px solid #ddcec3;
+        border-radius: 13px;
+        outline: none;
+        font: inherit;
+        font-size: 13px;
+    }
+
+    .a23-ai-input:focus {
+        border-color: #6f4328;
+        box-shadow: 0 0 0 3px rgba(111, 67, 40, 0.1);
+    }
+
+    .a23-ai-send {
+        border: 0;
+        border-radius: 13px;
+        color: #fff;
+        background: #6f4328;
+        cursor: pointer;
+        font-size: 18px;
+    }
+
+    .a23-ai-send:disabled {
+        opacity: 0.55;
+        cursor: wait;
+    }
+
+    @media (max-width: 540px) {
+        .a23-ai-widget {
+            right: 12px;
+            bottom: 12px;
+        }
+
+        .a23-ai-panel {
+            position: fixed;
+            right: 10px;
+            bottom: 84px;
+            width: calc(100vw - 20px);
+        }
+
+        .a23-ai-messages {
+            height: min(390px, 48vh);
+        }
+    }
+</style>
+
+<aside class="a23-ai-widget" aria-label="مساعد A23 الذكي">
+    <section
+        id="a23AiPanel"
+        class="a23-ai-panel"
+        aria-hidden="true"
+        aria-labelledby="a23AiHeading"
+    >
+        <header class="a23-ai-header">
+            <div class="a23-ai-identity">
+                <span class="a23-ai-avatar" aria-hidden="true">✦</span>
+                <span class="a23-ai-title">
+                    <strong id="a23AiHeading">مساعد A23 الذكي</strong>
+                    <span>جاهز لمساعدتك</span>
+                </span>
+            </div>
+            <button id="a23AiClose" class="a23-ai-close" type="button" aria-label="إغلاق المحادثة">×</button>
+        </header>
+
+        <div id="a23AiMessages" class="a23-ai-messages" aria-live="polite">
+            <div class="a23-ai-message assistant">أهلًا بك في A23 👋 اسألني عن المحاصيل، أدوات التحضير، الشحن أو أي سؤال آخر.</div>
+        </div>
+
+        <div class="a23-ai-suggestions" aria-label="أسئلة مقترحة">
+            <button class="a23-ai-suggestion" type="button">رشح لي محصولًا</button>
+            <button class="a23-ai-suggestion" type="button">كيف أتتبع طلبي؟</button>
+            <button class="a23-ai-suggestion" type="button">ما أدوات التقطير؟</button>
+        </div>
+
+        <form id="a23AiForm" class="a23-ai-form">
+            {% csrf_token %}
+            <input
+                id="a23AiInput"
+                class="a23-ai-input"
+                type="text"
+                maxlength="600"
+                placeholder="اكتب سؤالك هنا..."
+                aria-label="رسالتك إلى مساعد A23"
+                autocomplete="off"
+                required
+            >
+            <button id="a23AiSend" class="a23-ai-send" type="submit" aria-label="إرسال الرسالة">←</button>
+        </form>
+    </section>
+
+    <button
+        id="a23AiToggle"
+        class="a23-ai-toggle"
+        type="button"
+        aria-label="فتح مساعد A23 الذكي"
+        aria-expanded="false"
+        aria-controls="a23AiPanel"
+    >✦</button>
+</aside>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const panel = document.getElementById("a23AiPanel");
+        const toggle = document.getElementById("a23AiToggle");
+        const close = document.getElementById("a23AiClose");
+        const form = document.getElementById("a23AiForm");
+        const input = document.getElementById("a23AiInput");
+        const send = document.getElementById("a23AiSend");
+        const messages = document.getElementById("a23AiMessages");
+        const suggestions = document.querySelectorAll(".a23-ai-suggestion");
+        const csrf = form ? form.querySelector("[name=csrfmiddlewaretoken]") : null;
+        const history = [];
+
+        if (!panel || !toggle || !close || !form || !input || !send || !messages || !csrf) {
+            return;
+        }
+
+        function setPanel(open) {
+            panel.classList.toggle("open", open);
+            panel.setAttribute("aria-hidden", String(!open));
+            toggle.setAttribute("aria-expanded", String(open));
+            if (open) {
+                window.setTimeout(function () { input.focus(); }, 180);
+            }
+        }
+
+        function addMessage(text, role, extraClass) {
+            const message = document.createElement("div");
+            message.className = "a23-ai-message " + role + (extraClass ? " " + extraClass : "");
+            message.textContent = text;
+            messages.appendChild(message);
+            messages.scrollTop = messages.scrollHeight;
+            return message;
+        }
+
+        async function sendMessage(text) {
+            const cleanText = text.trim();
+            if (!cleanText || send.disabled) {
+                return;
+            }
+
+            addMessage(cleanText, "user");
+            input.value = "";
+            send.disabled = true;
+            const typing = addMessage("المساعد يكتب...", "assistant", "typing");
+
+            try {
+                const response = await fetch("{% url 'core:ai_chat' %}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": csrf.value
+                    },
+                    body: JSON.stringify({message: cleanText, history: history.slice(-6)})
+                });
+                const data = await response.json();
+                typing.remove();
+                if (!response.ok) {
+                    addMessage(data.error || "تعذر إرسال الرسالة.", "assistant");
+                    return;
+                }
+                addMessage(data.answer, "assistant");
+                history.push({role: "user", content: cleanText});
+                history.push({role: "assistant", content: data.answer});
+            } catch (error) {
+                typing.remove();
+                addMessage("تعذر الاتصال بالمساعد. تحقق من اتصالك وحاول مجددًا.", "assistant");
+            } finally {
+                send.disabled = false;
+                input.focus();
+            }
+        }
+
+        toggle.addEventListener("click", function () {
+            setPanel(!panel.classList.contains("open"));
+        });
+        close.addEventListener("click", function () { setPanel(false); });
+        form.addEventListener("submit", function (event) {
+            event.preventDefault();
+            sendMessage(input.value);
+        });
+        suggestions.forEach(function (button) {
+            button.addEventListener("click", function () {
+                setPanel(true);
+                sendMessage(button.textContent || "");
+            });
+        });
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape") {
+                setPanel(false);
+            }
         });
     });
 </script>
