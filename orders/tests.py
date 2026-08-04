@@ -29,7 +29,6 @@ class StoreOrderFlowTests(TestCase):
             "street": "شارع القهوة",
             "building_number": "23",
             "postal_code": "12345",
-            "shipping_method": "standard",
             "payment_method": "cash_on_delivery",
             "notes": "اتصل قبل التوصيل",
         }
@@ -61,26 +60,26 @@ class StoreOrderFlowTests(TestCase):
         )
         self.assertEqual(order.status, "confirmed")
         self.assertEqual(order.customer_email, "customer@example.com")
-        self.assertEqual(order.shipping_amount, Decimal("0.00"))
-        self.assertEqual(order.total_amount, Decimal("249.00"))
+        self.assertEqual(order.shipping_amount, Decimal("20.00"))
+        self.assertEqual(order.total_amount, Decimal("269.00"))
         self.assertEqual(order.items.count(), 1)
         self.assertTrue(Payment.objects.filter(order=order, status="pending").exists())
         self.assertTrue(Shipment.objects.filter(order=order, status="pending").exists())
         self.assertEqual(self.client.session["cart"], {})
         self.assertContains(self.client.get(response.url), order.order_number)
 
-    def test_shipping_prices_and_electronic_payment_pending(self):
+    def test_fixed_shipping_and_electronic_payment_pending(self):
         self.add_product(slug="espresso-cups")
         cart = self.client.get(reverse("orders:cart"))
-        self.assertContains(cart, "25")
+        self.assertContains(cart, "20")
         response = self.client.post(
             reverse("orders:checkout"),
-            self.checkout_data(payment_method="mada", shipping_method="express"),
+            self.checkout_data(payment_method="mada"),
         )
         order = Order.objects.get()
         self.assertEqual(response.status_code, 302)
         self.assertEqual(order.status, "pending")
-        self.assertEqual(order.shipping_amount, Decimal("45.00"))
+        self.assertEqual(order.shipping_amount, Decimal("20.00"))
 
     def test_order_detail_is_private_to_owner_or_checkout_session(self):
         order = Order.objects.create(

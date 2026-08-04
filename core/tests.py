@@ -86,11 +86,10 @@ class HomePageTests(TestCase):
         self.assertNotContains(invalid_response, order.get_status_display())
         self.assertContains(invalid_response, "لم نعثر على طلب مطابق")
 
-    def test_crops_and_tools_are_hidden_behind_catalog_sections(self):
+    def test_crops_and_tools_are_available_only_in_catalog_sections(self):
         home = self.client.get(reverse("core:home"))
-        self.assertContains(home, 'id="crop-collection"', count=1)
-        self.assertContains(home, 'coffee-products-section" hidden', count=1)
-        self.assertContains(home, 'id="tools-collection" class="section-space" hidden')
+        self.assertNotContains(home, 'id="crop-collection"')
+        self.assertNotContains(home, 'id="tools-collection"')
 
         crops = self.client.get(reverse("catalog:crops"))
         tools = self.client.get(reverse("catalog:tools"))
@@ -119,12 +118,13 @@ class HomePageTests(TestCase):
         ):
             self.assertContains(tools, tool)
 
-    def test_brand_decoration_and_free_shipping_threshold(self):
+    def test_brand_decoration_and_fixed_shipping_price(self):
         response = self.client.get(reverse("core:home"))
 
         self.assertContains(response, '<strong dir="ltr">A23</strong>', count=2)
-        self.assertContains(response, "شحن مجاني للطلبات التي تتجاوز")
-        self.assertContains(response, "150 ريال")
+        self.assertContains(response, "توصيل لجميع مناطق المملكة")
+        self.assertContains(response, "20 ريال")
+        self.assertNotContains(response, "150 ريال")
         self.assertNotContains(response, "250 ريال")
 
     def test_ai_widget_and_local_store_answers(self):

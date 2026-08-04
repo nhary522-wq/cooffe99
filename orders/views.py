@@ -15,9 +15,7 @@ from .forms import CheckoutForm
 from .models import Order, OrderItem, Shipment
 
 
-FREE_SHIPPING_THRESHOLD = Decimal("150.00")
-STANDARD_SHIPPING = Decimal("25.00")
-EXPRESS_SHIPPING = Decimal("45.00")
+SHIPPING_COST = Decimal("20.00")
 
 
 def _safe_next(request, default_name="orders:cart"):
@@ -31,7 +29,7 @@ def _safe_next(request, default_name="orders:cart"):
     return reverse(default_name)
 
 
-def _cart_summary(request, shipping_method="standard"):
+def _cart_summary(request):
     cart = request.session.get("cart", {})
     items = []
     subtotal = Decimal("0.00")
@@ -47,22 +45,13 @@ def _cart_summary(request, shipping_method="standard"):
         items.append({"product": item, "quantity": safe_quantity, "total": total})
         subtotal += total
 
-    if shipping_method == "express":
-        shipping = EXPRESS_SHIPPING
-    elif subtotal > FREE_SHIPPING_THRESHOLD:
-        shipping = Decimal("0.00")
-    else:
-        shipping = STANDARD_SHIPPING
+    shipping = SHIPPING_COST if items else Decimal("0.00")
 
     return {
         "items": items,
         "subtotal": subtotal,
         "shipping": shipping,
         "total": subtotal + shipping,
-        "free_shipping_remaining": max(
-            Decimal("0.00"),
-            FREE_SHIPPING_THRESHOLD - subtotal + Decimal("0.01"),
-        ),
     }
 
 
@@ -123,16 +112,14 @@ def checkout(request):
             initial["phone"] = request.user.profile.phone
 
     form = CheckoutForm(request.POST or None, initial=initial)
-    selected_shipping = request.POST.get("shipping_method", "standard")
-    summary = _cart_summary(request, selected_shipping)
+    summary = _cart_summary(request)
     if not summary["items"]:
         messages.error(request, "السلة فارغة. أضف منتجًا قبل إتمام الطلب.")
         return redirect("catalog:product_list")
 
     if request.method == "POST" and form.is_valid():
-        summary = _cart_summary(request, form.cleaned_data["shipping_method"])
+        summary = _cart_summary(request)
         payment_labels = dict(CheckoutForm.PAYMENT_CHOICES)
-        shipping_labels = dict(CheckoutForm.SHIPPING_CHOICES)
         method_type = form.cleaned_data["payment_method"]
         with transaction.atomic():
             order = Order.objects.create(
@@ -153,10 +140,7 @@ def checkout(request):
                 total_amount=summary["total"],
                 status="confirmed" if method_type == "cash_on_delivery" else "pending",
                 payment_status="pending",
-                customer_notes=(
-                    "طريقة التوصيل: "
-                    f"{shipping_labels[form.cleaned_data['shipping_method']]}"
-                ),
+                customer_notes="التوصيل لجميع مناطق المملكة بقيمة 20 ريال.",
             )
             for cart_item in summary["items"]:
                 product = cart_item["product"]
@@ -190,11 +174,7 @@ def checkout(request):
             )
             Shipment.objects.create(
                 order=order,
-                shipping_company=(
-                    "التوصيل السريع"
-                    if form.cleaned_data["shipping_method"] == "express"
-                    else "التوصيل العادي"
-                ),
+                shipping_company="التوصيل لجميع مناطق المملكة",
                 status="pending",
             )
 

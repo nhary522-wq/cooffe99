@@ -5,10 +5,6 @@ from django.core.exceptions import ValidationError
 
 
 class CheckoutForm(forms.Form):
-    SHIPPING_CHOICES = (
-        ("standard", "توصيل عادي (مجاني فوق 150 ريال، وإلا 25 ريال)"),
-        ("express", "توصيل سريع (45 ريال)"),
-    )
     PAYMENT_CHOICES = (
         ("cash_on_delivery", "الدفع عند الاستلام"),
         ("mada", "مدى"),
@@ -32,11 +28,6 @@ class CheckoutForm(forms.Form):
         label="الرمز البريدي",
         max_length=20,
         required=False,
-    )
-    shipping_method = forms.ChoiceField(
-        label="طريقة التوصيل",
-        choices=SHIPPING_CHOICES,
-        widget=forms.RadioSelect,
     )
     payment_method = forms.ChoiceField(
         label="طريقة الدفع",
