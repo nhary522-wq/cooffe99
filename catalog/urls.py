@@ -9,4 +9,8 @@ urlpatterns = [
     path("crops/", views.product_list, {"category": "crops"}, name="crops"),
     path("tools/", views.product_list, {"category": "tools"}, name="tools"),
     path("product/<slug:slug>/", views.product_detail, name="product_detail"),
+    path("product/<slug:slug>/review/", views.save_review, name="save_review"),
+    path("compare/", views.compare, name="compare"),
+    path("compare/add/<int:product_id>/", views.compare_add, name="compare_add"),
+    path("compare/remove/<int:product_id>/", views.compare_remove, name="compare_remove"),
 ]

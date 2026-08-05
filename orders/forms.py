@@ -1,6 +1,14 @@
 import re
 
 from django import forms
+from .subscription_models import Subscription
+
+
+class SubscriptionForm(forms.ModelForm):
+    class Meta:
+        model = Subscription
+        fields = ("address", "start_date", "coffee_preferences", "grind_type", "excluded_products")
+        widgets = {"start_date": forms.DateInput(attrs={"type": "date"}), "excluded_products": forms.CheckboxSelectMultiple()}
 from django.core.exceptions import ValidationError
 
 

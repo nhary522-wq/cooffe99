@@ -6,11 +6,13 @@ import time
 
 import requests
 from django.conf import settings
+from django.db.models import Q
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from django.views.decorators.http import require_POST
 
 from orders.models import Order
+from .models import BrewMethod, CoffeeContent, ContentCategory
 
 
 logger = logging.getLogger(__name__)
@@ -274,3 +276,33 @@ def track_order(request):
             "phone": phone,
         },
     )
+
+
+def brew_list(request):
+    methods = BrewMethod.objects.filter(is_published=True).prefetch_related("tools")
+    query = request.GET.get("q", "")[:100]
+    difficulty = request.GET.get("difficulty", "")[:20]
+    tool = request.GET.get("tool", "")[:140]
+    if query: methods = methods.filter(Q(name__icontains=query) | Q(short_description__icontains=query))
+    if difficulty: methods = methods.filter(difficulty=difficulty)
+    if tool: methods = methods.filter(tools__slug=tool)
+    return render(request, "core/brew_list.html", {"methods": methods.distinct(), "query": query})
+
+
+def brew_detail(request, slug):
+    method = get_object_or_404(BrewMethod.objects.filter(is_published=True).prefetch_related("steps", "tools", "products"), slug=slug)
+    return render(request, "core/brew_detail.html", {"method": method})
+
+
+def knowledge_list(request):
+    contents = CoffeeContent.objects.filter(is_published=True).select_related("category", "author")
+    query = request.GET.get("q", "")[:100]
+    category = request.GET.get("category", "")[:170]
+    if query: contents = contents.filter(Q(title__icontains=query) | Q(summary__icontains=query) | Q(content__icontains=query))
+    if category: contents = contents.filter(category__slug=category)
+    return render(request, "core/knowledge_list.html", {"contents": contents, "categories": ContentCategory.objects.all(), "query": query})
+
+
+def knowledge_detail(request, slug):
+    article = get_object_or_404(CoffeeContent.objects.filter(is_published=True).select_related("category", "author").prefetch_related("related_contents", "products"), slug=slug)
+    return render(request, "core/knowledge_detail.html", {"article": article})

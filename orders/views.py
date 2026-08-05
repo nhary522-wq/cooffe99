@@ -1,14 +1,21 @@
 from decimal import Decimal
 
 from django.contrib import messages
-from django.db import transaction
+from django.db import models, transaction
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
+from django.contrib.auth.decorators import login_required
+from django.utils import timezone
+from django.views.decorators.http import require_POST
+from datetime import datetime, time, timedelta
+from .forms import SubscriptionForm
+from .subscription_models import Subscription, SubscriptionPlan
 from django.urls import reverse
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_POST
 
 from catalog.services import get_store_item
+from catalog.models import Product
 from payments.models import Payment, PaymentMethod
 
 from .forms import CheckoutForm
@@ -57,14 +64,19 @@ def _cart_summary(request):
 
 @require_POST
 def add_to_cart(request, slug):
-    if not get_store_item(slug):
+    item = get_store_item(slug)
+    if not item:
         raise Http404
     try:
         quantity = max(1, min(int(request.POST.get("quantity", 1)), 20))
     except (TypeError, ValueError):
         quantity = 1
+    available = min(int(item.get("stock", 20)), 20)
+    if available < 1:
+        messages.error(request, "المنتج غير متوفر حاليًا.")
+        return redirect(_safe_next(request))
     cart = request.session.get("cart", {})
-    cart[slug] = min(int(cart.get(slug, 0)) + quantity, 20)
+    cart[slug] = min(int(cart.get(slug, 0)) + quantity, available)
     request.session["cart"] = cart
     messages.success(request, "تمت إضافة المنتج إلى السلة.")
     return redirect(_safe_next(request))
@@ -144,8 +156,15 @@ def checkout(request):
             )
             for cart_item in summary["items"]:
                 product = cart_item["product"]
+                db_product = Product.objects.select_for_update().filter(slug=product["slug"], is_active=True, is_published=True).first()
+                if db_product and db_product.track_stock:
+                    if db_product.stock < cart_item["quantity"]:
+                        raise ValueError("المخزون المتاح لا يكفي لإتمام الطلب.")
+                    db_product.stock -= cart_item["quantity"]
+                    db_product.save(update_fields=["stock", "updated_at"])
                 OrderItem.objects.create(
                     order=order,
+                    product=db_product,
                     product_name=product["name"],
                     sku=product["slug"].upper(),
                     unit_price=product["price"],
@@ -199,3 +218,39 @@ def order_detail(request, order_number):
     if not owns_order and not session_order:
         raise Http404
     return render(request, "orders/order_detail.html", {"order": order})
+
+
+def subscription_plans(request):
+    plans = SubscriptionPlan.objects.filter(is_available=True).annotate(active_count=models.Count("subscriptions", filter=models.Q(subscriptions__status="active")))
+    return render(request, "orders/subscription_plans.html", {"plans": plans})
+
+
+@login_required
+def subscription_create(request, slug):
+    plan = get_object_or_404(SubscriptionPlan, slug=slug, is_available=True)
+    form = SubscriptionForm(request.POST or None)
+    form.fields["address"].queryset = request.user.addresses.all()
+    form.fields["excluded_products"].queryset = form.fields["excluded_products"].queryset.filter(is_active=True, is_published=True)
+    if request.method == "POST" and form.is_valid():
+        subscription = form.save(commit=False); subscription.user = request.user; subscription.plan = plan
+        start = form.cleaned_data["start_date"]; subscription.next_shipment_at = timezone.make_aware(datetime.combine(start, time(hour=9))); subscription.status = "pending"; subscription.save(); form.save_m2m()
+        messages.success(request, "تم إنشاء الاشتراك بحالة انتظار التفعيل؛ لم يُفترض نجاح أي دفع."); return redirect("orders:subscription_detail", pk=subscription.pk)
+    return render(request, "orders/subscription_form.html", {"form": form, "plan": plan})
+
+
+@login_required
+def subscription_detail(request, pk):
+    subscription = get_object_or_404(Subscription.objects.select_related("plan", "address").prefetch_related("boxes__items__product"), pk=pk, user=request.user)
+    return render(request, "orders/subscription_detail.html", {"subscription": subscription})
+
+
+@login_required
+@require_POST
+def subscription_action(request, pk, action):
+    subscription = get_object_or_404(Subscription, pk=pk, user=request.user)
+    now = timezone.now()
+    if action == "pause" and subscription.status == "active": subscription.status, subscription.paused_at = "paused", now
+    elif action == "resume" and subscription.status == "paused": subscription.status, subscription.paused_at, subscription.next_shipment_at = "active", None, now + timedelta(days=subscription.plan.interval_days)
+    elif action == "cancel" and subscription.status in {"pending", "active", "paused"}: subscription.status, subscription.cancelled_at = "cancelled", now
+    else: messages.error(request, "لا يمكن تنفيذ العملية في الحالة الحالية."); return redirect("orders:subscription_detail", pk=pk)
+    subscription.save(update_fields=["status", "paused_at", "cancelled_at", "next_shipment_at", "updated_at"]); return redirect("orders:subscription_detail", pk=pk)

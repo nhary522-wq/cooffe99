@@ -1,0 +1,1 @@
+{% extends "catalog/base.html" %}{% block title %}حفظ تجربة قهوة{% endblock %}{% block content %}<main class="store-container" dir="rtl"><h1>{% if entry %}تعديل التجربة{% else %}إضافة تجربة{% endif %}</h1><form method="post" enctype="multipart/form-data">{% csrf_token %}{{ form.as_p }}<button class="store-button">حفظ</button></form></main>{% endblock %}

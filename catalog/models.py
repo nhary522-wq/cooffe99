@@ -3,6 +3,7 @@ from decimal import Decimal
 
 from cloudinary.models import CloudinaryField
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import Q
@@ -203,6 +204,8 @@ class Brand(models.Model):
 
 
 class Product(models.Model):
+    ROAST_CHOICES = [("light", "فاتح"), ("medium", "متوسط"), ("dark", "غامق")]
+    PROCESS_CHOICES = [("washed", "مغسولة"), ("natural", "مجففة"), ("honey", "عسلية"), ("other", "أخرى")]
     category = models.ForeignKey(
         Category,
         verbose_name="التصنيف",
@@ -322,6 +325,26 @@ class Product(models.Model):
         ],
     )
 
+    country = models.CharField("الدولة", max_length=120, blank=True, db_index=True)
+    region = models.CharField("المنطقة", max_length=150, blank=True, db_index=True)
+    farm = models.CharField("المزرعة", max_length=180, blank=True)
+    producer = models.CharField("المنتج أو المزارع", max_length=180, blank=True)
+    variety = models.CharField("السلالة", max_length=180, blank=True, db_index=True)
+    processing_method = models.CharField("طريقة المعالجة", max_length=30, choices=PROCESS_CHOICES, blank=True, db_index=True)
+    altitude_masl = models.PositiveIntegerField("الارتفاع عن سطح البحر (م)", blank=True, null=True)
+    roast_level = models.CharField("درجة التحميص", max_length=20, choices=ROAST_CHOICES, blank=True, db_index=True)
+    flavor_notes = models.CharField("الإيحاءات والنكهات", max_length=350, blank=True)
+    acidity = models.PositiveSmallIntegerField("الحموضة", default=3, validators=[MinValueValidator(1), MaxValueValidator(5)])
+    sweetness = models.PositiveSmallIntegerField("الحلاوة", default=3, validators=[MinValueValidator(1), MaxValueValidator(5)])
+    bitterness = models.PositiveSmallIntegerField("المرارة", default=3, validators=[MinValueValidator(1), MaxValueValidator(5)])
+    body = models.PositiveSmallIntegerField("القوام", default=3, validators=[MinValueValidator(1), MaxValueValidator(5)])
+    roast_date = models.DateField("تاريخ التحميص", blank=True, null=True)
+    roast_batch_number = models.CharField("رقم دفعة التحميص", max_length=100, blank=True, db_index=True)
+    suitable_brew_methods = models.CharField("طرق التحضير المناسبة", max_length=350, blank=True)
+    meta_title = models.CharField("عنوان SEO", max_length=200, blank=True)
+    meta_description = models.CharField("وصف SEO", max_length=320, blank=True)
+    is_published = models.BooleanField("منشور", default=True, db_index=True)
+
     is_active = models.BooleanField(
         "نشط",
         default=True,
@@ -437,6 +460,18 @@ class Product(models.Model):
             self.slug = slug
 
         super().save(*args, **kwargs)
+
+    def clean(self):
+        if self.compare_at_price is not None and self.compare_at_price < self.price:
+            raise ValidationError({"compare_at_price": "سعر المقارنة يجب ألا يقل عن السعر الحالي."})
+        if self.altitude_masl is not None and self.altitude_masl > 5000:
+            raise ValidationError({"altitude_masl": "الارتفاع يجب أن يكون بين 0 و5000 متر."})
+
+    @property
+    def price_per_100g(self):
+        if not self.weight or self.weight <= 0:
+            return None
+        return (self.price / (self.weight * Decimal("10"))).quantize(Decimal("0.01"))
 
 
 # =============================================================================
@@ -656,6 +691,14 @@ class ProductReview(models.Model):
         "التعليق",
         blank=True,
     )
+    quality_rating = models.PositiveSmallIntegerField("الجودة", default=3, validators=[MinValueValidator(1), MaxValueValidator(5)])
+    aroma_rating = models.PositiveSmallIntegerField("الرائحة", default=3, validators=[MinValueValidator(1), MaxValueValidator(5)])
+    sweetness_rating = models.PositiveSmallIntegerField("الحلاوة", default=3, validators=[MinValueValidator(1), MaxValueValidator(5)])
+    acidity_rating = models.PositiveSmallIntegerField("الحموضة", default=3, validators=[MinValueValidator(1), MaxValueValidator(5)])
+    body_rating = models.PositiveSmallIntegerField("القوام", default=3, validators=[MinValueValidator(1), MaxValueValidator(5)])
+    value_rating = models.PositiveSmallIntegerField("القيمة مقابل السعر", default=3, validators=[MinValueValidator(1), MaxValueValidator(5)])
+    would_buy_again = models.BooleanField("سيشتريه مرة أخرى", default=False)
+    is_verified_purchase = models.BooleanField("مشتري موثق", default=False, editable=False, db_index=True)
 
     is_approved = models.BooleanField(
         "معتمد",
@@ -686,4 +729,17 @@ class ProductReview(models.Model):
 
     def __str__(self):
         return f"{self.product.name} - {self.rating}/5"
+
+
+class ReviewImage(models.Model):
+    review = models.ForeignKey(ProductReview, verbose_name="المراجعة", on_delete=models.CASCADE, related_name="images")
+    image = CloudinaryField("الصورة", resource_type="image", folder="cooffe99/reviews")
+    created_at = models.DateTimeField("تاريخ الإضافة", auto_now_add=True)
+
+    class Meta:
+        verbose_name = "صورة مراجعة"
+        verbose_name_plural = "صور المراجعات"
+
+    def __str__(self):
+        return f"صورة مراجعة {self.review_id}"
 

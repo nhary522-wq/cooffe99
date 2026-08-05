@@ -5,7 +5,21 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 
-from .models import Profile
+from .models import CoffeeJournalEntry, Profile
+
+
+class CoffeeJournalForm(forms.ModelForm):
+    class Meta:
+        model = CoffeeJournalEntry
+        exclude = ("user", "created_at", "updated_at")
+        widgets = {"experienced_at": forms.DateTimeInput(attrs={"type": "datetime-local"}), "notes": forms.Textarea(attrs={"rows": 4}), "recipe": forms.Textarea(attrs={"rows": 5})}
+
+    def clean(self):
+        cleaned = super().clean()
+        if not cleaned.get("product") and not (cleaned.get("external_product_name") or "").strip(): self.add_error("external_product_name", "اختر منتجًا أو أدخل اسم قهوة خارجية.")
+        image = cleaned.get("image")
+        if image and image.size > 5 * 1024 * 1024: self.add_error("image", "حجم الصورة يجب ألا يتجاوز 5 ميجابايت.")
+        return cleaned
 
 
 def normalize_phone(value):

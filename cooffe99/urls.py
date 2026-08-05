@@ -8,7 +8,7 @@ from django.urls import include, path
 # تخصيص لوحة الإدارة
 # -----------------------------------------------------------------------------
 
-admin.site.site_header = "إدارة متجر كوفي 99"
+admin.site.site_header = "إدارة منصة A23 للقهوة"
 admin.site.site_title = "لوحة إدارة المتجر"
 admin.site.index_title = "مرحبًا بك في لوحة التحكم"
 

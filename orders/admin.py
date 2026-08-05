@@ -1,6 +1,9 @@
 from django.contrib import admin
 
 from .models import Cart, CartItem, Coupon, Order, OrderItem, Shipment
+from .subscription_models import Subscription, SubscriptionBox, SubscriptionBoxItem, SubscriptionPlan
+
+admin.site.register([SubscriptionPlan, Subscription, SubscriptionBox, SubscriptionBoxItem])
 
 
 class CartItemInline(admin.TabularInline):

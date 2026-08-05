@@ -23,11 +23,28 @@ STORE_ITEMS = (
 
 
 def get_store_item(slug):
+    from .models import Product
+    product = Product.objects.filter(slug=slug, is_active=True, is_published=True).select_related("category").first()
+    if product:
+        return {"slug": product.slug, "name": product.name,
+                "category": "tools" if "tool" in product.category.slug else "crops",
+                "origin": product.country or product.category.name, "price": product.price,
+                "image": product.main_image.url if product.main_image else "/static/images/coffee-placeholder.svg",
+                "description": product.short_description or product.description,
+                "stock": product.stock if product.track_stock else 999999}
     return next((item for item in STORE_ITEMS if item["slug"] == slug), None)
 
 
 def get_store_items(category=None, query=""):
-    items = STORE_ITEMS
+    from .models import Product
+    db_products = Product.objects.filter(is_active=True, is_published=True).select_related("category", "brand")
+    if category == "crops": db_products = db_products.exclude(category__slug__icontains="tool")
+    if category == "tools": db_products = db_products.filter(category__slug__icontains="tool")
+    db_products = list(db_products)
+    db_slugs = {p.slug for p in db_products}
+    items = tuple({"slug": p.slug, "name": p.name, "category": "tools" if "tool" in p.category.slug else "crops", "origin": p.country or p.category.name,
+                   "price": p.price, "image": p.main_image.url if p.main_image else "/static/images/coffee-placeholder.svg", "description": p.short_description or p.description}
+                  for p in db_products) + tuple(item for item in STORE_ITEMS if item["slug"] not in db_slugs)
     if category in {"crops", "tools"}:
         items = tuple(item for item in items if item["category"] == category)
     normalized_query = query.strip().casefold()

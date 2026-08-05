@@ -1,6 +1,35 @@
 from django.contrib import admin
 
-from .models import Banner, ContactMessage, SiteSetting, StaticPage
+from .models import (Banner, BrewMethod, BrewStep, BrewTool, CoffeeContent,
+                     ContactMessage, ContentCategory, SiteSetting, StaticPage)
+
+
+class BrewStepInline(admin.TabularInline):
+    model = BrewStep
+    extra = 1
+
+
+@admin.register(BrewMethod)
+class BrewMethodAdmin(admin.ModelAdmin):
+    list_display = ("name", "difficulty", "duration_minutes", "is_published", "display_order")
+    list_filter = ("difficulty", "is_published", "tools")
+    search_fields = ("name", "short_description", "description")
+    prepopulated_fields = {"slug": ("name",)}
+    filter_horizontal = ("tools", "products")
+    inlines = (BrewStepInline,)
+
+
+@admin.register(CoffeeContent)
+class CoffeeContentAdmin(admin.ModelAdmin):
+    list_display = ("title", "category", "difficulty", "is_published", "published_at")
+    list_filter = ("category", "difficulty", "is_published")
+    search_fields = ("title", "summary", "content")
+    prepopulated_fields = {"slug": ("title",)}
+    filter_horizontal = ("related_contents", "products")
+
+
+admin.site.register(BrewTool)
+admin.site.register(ContentCategory)
 
 
 @admin.register(SiteSetting)

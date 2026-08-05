@@ -1,6 +1,12 @@
 from django.contrib import admin
 
-from .models import Address, Profile, Wishlist, WishlistItem
+from .models import (Address, CoffeeJournalEntry, LoyaltyAccount,
+                     LoyaltySetting, LoyaltyTransaction, Profile, SavedRecipe,
+                     TasteAnswer, TasteProfile, TasteQuestion, Wishlist,
+                     WishlistItem)
+
+admin.site.register([TasteQuestion, TasteAnswer, TasteProfile, CoffeeJournalEntry,
+                     SavedRecipe, LoyaltySetting, LoyaltyAccount, LoyaltyTransaction])
 
 
 class WishlistItemInline(admin.TabularInline):

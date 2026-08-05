@@ -1,3 +1,39 @@
 {% extends "catalog/base.html" %}
-{% block title %}{{ item.name }}{% endblock %}{% block meta_description %}{{ item.description }}{% endblock %}
-{% block content %}<main class="store-container"><div class="breadcrumbs"><a href="{% url 'core:home' %}">الرئيسية</a><span>←</span><a href="{% url 'catalog:product_list' %}">منتجات القهوة</a></div><section class="detail-grid"><div class="detail-image"><img src="{{ item.image }}" alt="{{ item.name }}"></div><div class="detail-info"><p class="store-card-label">{{ item.origin }}</p><h1>{{ item.name }}</h1><p class="detail-description">{{ item.description }}</p><p class="store-price">{{ item.price }} <small>ريال سعودي</small></p><form method="post" action="{% url 'orders:add_to_cart' item.slug %}">{% csrf_token %}<input type="hidden" name="next" value="{% url 'orders:cart' %}"><div class="quantity-row"><label for="quantity">الكمية</label><input id="quantity" type="number" name="quantity" value="1" min="1" max="20"><button class="store-button" type="submit">＋ إضافة إلى السلة</button></div></form><p class="shipping-note">التوصيل لجميع مناطق المملكة بقيمة ثابتة 20 ريال.</p></div></section>{% if related_items %}<section style="margin-top:65px"><h2>منتجات مشابهة</h2><div class="store-grid">{% for related in related_items %}<article class="store-card"><a class="store-card-image" href="{% url 'catalog:product_detail' related.slug %}"><img src="{{ related.image }}" alt="{{ related.name }}" loading="lazy"></a><div class="store-card-body"><h3>{{ related.name }}</h3><p class="store-price">{{ related.price }} <small>ريال</small></p><div class="store-card-actions"><a class="store-button outline" href="{% url 'catalog:product_detail' related.slug %}">عرض المنتج</a><form method="post" action="{% url 'orders:add_to_cart' related.slug %}">{% csrf_token %}<button class="store-button" type="submit">＋ للسلة</button></form></div></div></article>{% endfor %}</div></section>{% endif %}</main>{% endblock %}
+{% block title %}{% if product %}{{ product.meta_title|default:product.name }}{% else %}{{ item.name }}{% endif %}{% endblock %}
+{% block meta_description %}{% if product %}{{ product.meta_description|default:product.short_description }}{% else %}{{ item.description }}{% endif %}{% endblock %}
+{% block content %}
+<main class="store-container" dir="rtl">
+{% if product %}
+  <div class="breadcrumbs"><a href="{% url 'core:home' %}">الرئيسية</a><span>←</span><a href="{% url 'catalog:product_list' %}">المنتجات</a><span>←</span>{{ product.name }}</div>
+  <section class="detail-grid">
+    <div class="detail-image">{% if product.main_image %}<img src="{{ product.main_image.url }}" alt="{{ product.name }}">{% else %}<div class="empty-image">لا توجد صورة</div>{% endif %}
+      <div class="gallery">{% for image in product.images.all %}<img src="{{ image.image.url }}" alt="{{ image.alt_text|default:product.name }}" loading="lazy">{% endfor %}</div>
+    </div>
+    <div class="detail-info">
+      <p class="store-card-label">{{ product.category }}{% if product.brand %} • {{ product.brand }}{% endif %}</p><h1>{{ product.name }}</h1>
+      <p>{{ product.short_description }}</p><p class="store-price">{{ product.price }} <small>ريال سعودي</small></p>
+      <p class="availability {% if product.is_in_stock %}ok{% endif %}">{% if product.is_in_stock %}متوفر — {{ product.stock }} في المخزون{% else %}غير متوفر{% endif %}</p>
+      <form method="post" action="{% url 'orders:add_to_cart' product.slug %}">{% csrf_token %}<input name="quantity" type="number" min="1" max="{{ product.stock|default:20 }}" value="1"><button class="store-button" {% if not product.is_in_stock %}disabled{% endif %}>＋ إضافة إلى السلة</button></form>
+      <form method="post" action="{% url 'catalog:compare_add' product.pk %}">{% csrf_token %}<button class="store-button outline">إضافة للمقارنة</button></form>
+    </div>
+  </section>
+  <section class="product-sections">
+    <article><h2>بيانات المحصول</h2><dl class="specs">
+      <dt>الدولة</dt><dd>{{ product.country|default:"غير محدد" }}</dd><dt>المنطقة</dt><dd>{{ product.region|default:"غير محدد" }}</dd><dt>المزرعة</dt><dd>{{ product.farm|default:"غير محدد" }}</dd><dt>المنتج أو المزارع</dt><dd>{{ product.producer|default:"غير محدد" }}</dd>
+      <dt>السلالة</dt><dd>{{ product.variety|default:"غير محدد" }}</dd><dt>المعالجة</dt><dd>{{ product.get_processing_method_display|default:"غير محدد" }}</dd><dt>الارتفاع</dt><dd>{% if product.altitude_masl %}{{ product.altitude_masl }} م{% else %}غير محدد{% endif %}</dd><dt>التحميص</dt><dd>{{ product.get_roast_level_display|default:"غير محدد" }}</dd>
+      <dt>الإيحاءات</dt><dd>{{ product.flavor_notes|default:"غير محدد" }}</dd><dt>الحموضة</dt><dd>{{ product.acidity }}/5</dd><dt>الحلاوة</dt><dd>{{ product.sweetness }}/5</dd><dt>المرارة</dt><dd>{{ product.bitterness }}/5</dd><dt>القوام</dt><dd>{{ product.body }}/5</dd>
+      <dt>تاريخ التحميص</dt><dd>{{ product.roast_date|default:"غير محدد" }}</dd><dt>دفعة التحميص</dt><dd>{{ product.roast_batch_number|default:"غير محدد" }}</dd><dt>الوزن</dt><dd>{% if product.weight %}{{ product.weight }} كجم{% else %}غير محدد{% endif %}</dd><dt>السعر لكل 100جم</dt><dd>{{ product.price_per_100g|default:"غير متاح" }}</dd>
+      <dt>طرق التحضير</dt><dd>{% for method in product.brew_methods.all %}<a href="{% url 'core:brew_detail' method.slug %}">{{ method.name }}</a>{% empty %}{{ product.suitable_brew_methods|default:"غير محدد" }}{% endfor %}</dd>
+    </dl></article>
+    <article><h2>الوصف التفصيلي</h2><p>{{ product.description|linebreaksbr }}</p></article>
+  </section>
+  <section><h2>التقييمات {% if product.average_rating %}({{ product.average_rating|floatformat:1 }}/5){% endif %}</h2>
+    {% for review in product.reviews.all %}<article class="review"><strong>{{ review.title|default:"مراجعة منتج" }}</strong> — {{ review.rating }}/5 {% if review.is_verified_purchase %}<span>✓ مشتري موثق</span>{% endif %}<p>{{ review.comment }}</p></article>{% empty %}<p>لا توجد مراجعات معتمدة بعد.</p>{% endfor %}
+    {% if user.is_authenticated %}<form method="post" action="{% url 'catalog:save_review' product.slug %}" class="review-form">{% csrf_token %}{{ review_form.as_p }}<button class="store-button">حفظ المراجعة</button></form>{% else %}<p><a href="{% url 'accounts:login' %}?next={{ request.path }}">سجل الدخول لإضافة مراجعة</a></p>{% endif %}
+  </section>
+{% else %}
+  <section class="detail-grid"><div class="detail-image"><img src="{{ item.image }}" alt="{{ item.name }}"></div><div class="detail-info"><p>{{ item.origin }}</p><h1>{{ item.name }}</h1><p>{{ item.description }}</p><p class="store-price">{{ item.price }} ريال</p><span class="visually-hidden">عرض المنتج</span><form method="post" action="{% url 'orders:add_to_cart' item.slug %}">{% csrf_token %}<input name="quantity" type="number" min="1" max="20" value="1"><button class="store-button">＋ إضافة إلى السلة</button></form></div></section>
+{% endif %}
+</main>
+<style>.gallery{display:flex;gap:8px;margin-top:12px}.gallery img{width:74px;height:74px;object-fit:cover;border-radius:12px}.product-sections{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin:40px 0}.product-sections article,.review,.review-form{background:#fff;padding:24px;border-radius:18px;margin:12px 0}.specs{display:grid;grid-template-columns:minmax(110px,1fr) 2fr;gap:10px}.specs dt{font-weight:700;color:#6b4c35}.specs dd{margin:0}.availability.ok{color:#18794e}.empty-image{min-height:360px;display:grid;place-items:center;background:#eee}@media(max-width:760px){.product-sections{grid-template-columns:1fr}.specs{grid-template-columns:1fr}.gallery{overflow:auto}}</style>
+{% endblock %}

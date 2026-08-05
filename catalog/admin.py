@@ -8,7 +8,10 @@ from .models import (
     ProductImage,
     ProductReview,
     ProductVariant,
+    ReviewImage,
 )
+
+admin.site.register(ReviewImage)
 
 
 class ProductImageInline(admin.TabularInline):

@@ -1,0 +1,1 @@
+{% extends "catalog/base.html" %}{% block title %}الاشتراك في {{ plan.name }}{% endblock %}{% block content %}<main class="store-container" dir="rtl"><h1>{{ plan.name }}</h1><p>سيُنشأ الاشتراك بحالة انتظار التفعيل، ولا يعني ذلك نجاح الدفع.</p><form method="post">{% csrf_token %}{{ form.as_p }}<button class="store-button">إنشاء الاشتراك</button></form></main>{% endblock %}
