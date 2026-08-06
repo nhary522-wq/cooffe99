@@ -18,6 +18,7 @@ class HomePageTests(TestCase):
         self.assertContains(response, reverse("catalog:crops"))
         self.assertContains(response, reverse("catalog:tools"))
         self.assertContains(response, reverse("orders:cart"))
+        self.assertContains(response, "luxury-theme.")
 
     def test_hero_uses_local_autoplay_video(self):
         response = self.client.get(reverse("core:home"))
