@@ -10,8 +10,59 @@ from .models import (
     ProductVariant,
     ReviewImage,
 )
+from .domain_models import (CropProfile, FlavorNote, GrindOption, InventoryMovement,
+    Manufacturer, ProcessingMethod, ProductBrewRecipe, ProductCompatibility,
+    ProductGrindOption, ProductJourneyStage, QualityInspection, RoastBatch,
+    Supplier, ToolBundle, ToolBundleItem, ToolProfile, ToolSpecification,
+    ToolSpecificationValue, VariantCommercialData)
 
 admin.site.register(ReviewImage)
+
+
+class ProductGrindInline(admin.TabularInline): model=ProductGrindOption; extra=0
+class ProductRecipeInline(admin.TabularInline): model=ProductBrewRecipe; extra=0
+class ProductJourneyInline(admin.TabularInline): model=ProductJourneyStage; extra=0
+class ToolSpecValueInline(admin.TabularInline): model=ToolSpecificationValue; extra=0
+class BundleItemInline(admin.TabularInline): model=ToolBundleItem; extra=1
+
+@admin.register(Supplier)
+class SupplierAdmin(admin.ModelAdmin):
+    list_display=("name","supplier_type","country","internal_rating","is_verified","is_active")
+    list_filter=("supplier_type","country","is_verified","is_active")
+    search_fields=("name","contact_name","email","phone")
+    prepopulated_fields={"slug":("name",)}
+
+@admin.register(RoastBatch)
+class RoastBatchAdmin(admin.ModelAdmin):
+    list_display=("batch_number","product","roastery","roast_date","freshness_status","status")
+    list_filter=("status","roast_level","roastery")
+    search_fields=("batch_number","product__name")
+    list_select_related=("product","roastery","variant")
+
+@admin.register(VariantCommercialData)
+class VariantCommercialDataAdmin(admin.ModelAdmin):
+    list_display=("variant","supplier","available_stock","final_cost","profit_margin")
+    list_select_related=("variant","variant__product","supplier")
+    def get_exclude(self, request, obj=None):
+        if request.user.has_perm("catalog.view_product_costs"): return ()
+        return ("purchase_cost","shipping_cost","customs_cost","tax_cost","storage_cost","supplier_url")
+
+@admin.register(QualityInspection)
+class QualityInspectionAdmin(admin.ModelAdmin):
+    list_display=("receipt_batch","product","supplier","received_quantity","accepted_quantity","rejected_quantity","status")
+    list_filter=("status","supplier")
+    list_select_related=("product","supplier")
+
+@admin.register(ToolBundle)
+class ToolBundleAdmin(admin.ModelAdmin):
+    list_display=("name","bundle_price","original_price","savings","available_stock","is_active")
+    prepopulated_fields={"slug":("name",)}
+    inlines=(BundleItemInline,)
+
+admin.site.register([Manufacturer, ProcessingMethod, FlavorNote, CropProfile,
+    GrindOption, ProductGrindOption, ProductBrewRecipe, ProductJourneyStage,
+    ToolProfile, ToolSpecification, ToolSpecificationValue, ProductCompatibility,
+    ToolBundleItem, InventoryMovement])
 
 
 class ProductImageInline(admin.TabularInline):
@@ -223,6 +274,10 @@ class ProductAdmin(admin.ModelAdmin):
         ProductImageInline,
         ProductVariantInline,
         ProductAttributeInline,
+        ProductGrindInline,
+        ProductRecipeInline,
+        ProductJourneyInline,
+        ToolSpecValueInline,
     )
 
     fieldsets = (
@@ -284,10 +339,16 @@ class ProductAdmin(admin.ModelAdmin):
         ),
     )
 
-    @admin.display(
-        description="متوفر",
-        boolean=True,
-    )
+    def get_fieldsets(self, request, obj=None):
+        return super().get_fieldsets(request, obj) + (
+            ("بيانات الكتالوج", {"fields": ("product_type", "commercial_name", "display_order", "is_published", "meta_title", "meta_description")}),
+            ("المنشأ والزراعة", {"classes": ("collapse",), "fields": ("country", "region", "village", "farm", "producer", "farm_story", "coffee_species", "variety", "altitude_min", "altitude_max", "soil_type", "irrigation_method", "harvest_season", "harvest_date", "harvest_method", "latitude", "longitude", "origin_certificate", "certifications")}),
+            ("الجودة والتذوق", {"classes": ("collapse",), "fields": ("sca_score", "bean_density", "bean_size", "defect_count", "quality_grade", "evaluator_name", "evaluation_date", "quality_results", "flavor_notes", "secondary_flavor_notes", "aroma", "acidity", "sweetness", "bitterness", "body", "balance", "complexity", "cleanliness", "finish", "mouthfeel")}),
+            ("بيانات الأدوات", {"classes": ("collapse",), "fields": ("country_of_manufacture", "model_number", "release_year", "usage_level", "warranty", "box_contents", "usage_instructions", "setup_steps", "safety_warnings", "cleaning_instructions", "maintenance_schedule", "common_issues", "manual_file")}),
+            ("الوسائط", {"classes": ("collapse",), "fields": ("packaging_image", "farm_image", "roast_image", "video_url")}),
+        )
+
+    @admin.display(description="متوفر", boolean=True)
     def is_in_stock_display(self, obj):
         return obj.is_in_stock
 

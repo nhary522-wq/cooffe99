@@ -13,4 +13,7 @@ urlpatterns = [
     path("compare/", views.compare, name="compare"),
     path("compare/add/<int:product_id>/", views.compare_add, name="compare_add"),
     path("compare/remove/<int:product_id>/", views.compare_remove, name="compare_remove"),
+    path("admin-import/<str:kind>/", views.import_catalog, name="import_catalog"),
+    path("brand/<slug:slug>/", views.brand_detail, name="brand_detail"),
+    path("card/<slug:slug>/", views.digital_card, name="digital_card"),
 ]

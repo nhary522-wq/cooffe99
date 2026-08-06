@@ -4,10 +4,15 @@ from decimal import Decimal
 from cloudinary.models import CloudinaryField
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.validators import FileExtensionValidator, MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import Q
 from django.utils.text import slugify
+
+
+def validate_catalog_file_size(value):
+    if value.size > 8 * 1024 * 1024:
+        raise ValidationError("حجم الملف يجب ألا يتجاوز 8 ميجابايت.")
 
 
 # =============================================================================
@@ -119,6 +124,7 @@ class Category(models.Model):
 
 
 class Brand(models.Model):
+    BRAND_TYPES = [("roastery", "محمصة"), ("brand", "علامة تجارية"), ("both", "محمصة وعلامة")]
     name = models.CharField(
         "اسم العلامة التجارية",
         max_length=150,
@@ -150,6 +156,15 @@ class Brand(models.Model):
         "الموقع الإلكتروني",
         blank=True,
     )
+    brand_type = models.CharField("النوع", max_length=20, choices=BRAND_TYPES, default="brand", db_index=True)
+    cover_image = CloudinaryField("صورة الغلاف", resource_type="image", folder="cooffe99/brands/covers", blank=True, null=True)
+    short_description = models.CharField("الوصف المختصر", max_length=350, blank=True)
+    country = models.CharField("الدولة", max_length=120, blank=True, db_index=True)
+    city = models.CharField("المدينة", max_length=120, blank=True)
+    social_links = models.JSONField("وسائل التواصل", default=dict, blank=True)
+    contact_details = models.TextField("بيانات التواصل", blank=True)
+    is_verified = models.BooleanField("موثقة", default=False)
+    display_order = models.PositiveIntegerField("ترتيب الظهور", default=0)
 
     is_active = models.BooleanField(
         "نشطة",
@@ -204,6 +219,7 @@ class Brand(models.Model):
 
 
 class Product(models.Model):
+    PRODUCT_TYPES = [("crop", "محصول قهوة"), ("tool", "أداة قهوة"), ("other", "منتج آخر")]
     ROAST_CHOICES = [("light", "فاتح"), ("medium", "متوسط"), ("dark", "غامق")]
     PROCESS_CHOICES = [("washed", "مغسولة"), ("natural", "مجففة"), ("honey", "عسلية"), ("other", "أخرى")]
     category = models.ForeignKey(
@@ -325,6 +341,55 @@ class Product(models.Model):
         ],
     )
 
+    product_type = models.CharField("نوع المنتج", max_length=15, choices=PRODUCT_TYPES, default="other", db_index=True)
+    commercial_name = models.CharField("الاسم التجاري", max_length=220, blank=True)
+    display_order = models.PositiveIntegerField("ترتيب الظهور", default=0)
+    village = models.CharField("المدينة أو القرية", max_length=150, blank=True)
+    farm_story = models.TextField("قصة المزرعة", blank=True)
+    coffee_species = models.CharField("نوع البن", max_length=50, blank=True, db_index=True)
+    altitude_min = models.PositiveIntegerField("أدنى ارتفاع (م)", blank=True, null=True)
+    altitude_max = models.PositiveIntegerField("أعلى ارتفاع (م)", blank=True, null=True)
+    soil_type = models.CharField("نوع التربة", max_length=150, blank=True)
+    irrigation_method = models.CharField("طريقة الري", max_length=150, blank=True)
+    harvest_season = models.CharField("موسم الحصاد", max_length=150, blank=True)
+    harvest_date = models.DateField("تاريخ الحصاد", blank=True, null=True)
+    harvest_method = models.CharField("طريقة الحصاد", max_length=30, blank=True)
+    latitude = models.DecimalField("خط العرض", max_digits=9, decimal_places=6, blank=True, null=True)
+    longitude = models.DecimalField("خط الطول", max_digits=9, decimal_places=6, blank=True, null=True)
+    origin_certificate = models.FileField("شهادة المنشأ", upload_to="products/certificates/", blank=True, validators=[FileExtensionValidator(["pdf", "jpg", "jpeg", "png", "webp"]), validate_catalog_file_size])
+    certifications = models.TextField("الشهادات والجودة", blank=True)
+    sca_score = models.DecimalField("تقييم SCA", max_digits=5, decimal_places=2, blank=True, null=True, validators=[MinValueValidator(0), MaxValueValidator(100)])
+    bean_density = models.DecimalField("كثافة الحبوب", max_digits=7, decimal_places=2, blank=True, null=True, validators=[MinValueValidator(0)])
+    bean_size = models.CharField("حجم الحبة", max_length=100, blank=True)
+    defect_count = models.PositiveIntegerField("عدد العيوب", blank=True, null=True)
+    quality_grade = models.CharField("درجة الجودة", max_length=100, blank=True)
+    evaluator_name = models.CharField("اسم المقيم", max_length=150, blank=True)
+    evaluation_date = models.DateField("تاريخ التقييم", blank=True, null=True)
+    quality_results = models.TextField("نتائج الفحص", blank=True)
+    aroma = models.PositiveSmallIntegerField("العطر", default=3, validators=[MinValueValidator(1), MaxValueValidator(5)])
+    balance = models.PositiveSmallIntegerField("التوازن", default=3, validators=[MinValueValidator(1), MaxValueValidator(5)])
+    complexity = models.PositiveSmallIntegerField("التعقيد", default=3, validators=[MinValueValidator(1), MaxValueValidator(5)])
+    cleanliness = models.PositiveSmallIntegerField("النظافة", default=3, validators=[MinValueValidator(1), MaxValueValidator(5)])
+    finish = models.PositiveSmallIntegerField("النهاية", default=3, validators=[MinValueValidator(1), MaxValueValidator(5)])
+    mouthfeel = models.CharField("الإحساس بالفم", max_length=200, blank=True)
+    secondary_flavor_notes = models.CharField("الإيحاءات الثانوية", max_length=350, blank=True)
+    packaging_image = CloudinaryField("صورة العبوة", resource_type="image", folder="cooffe99/products/packaging", blank=True, null=True)
+    farm_image = CloudinaryField("صورة المزرعة", resource_type="image", folder="cooffe99/products/farms", blank=True, null=True)
+    roast_image = CloudinaryField("صورة التحميص", resource_type="image", folder="cooffe99/products/roasting", blank=True, null=True)
+    video_url = models.URLField("فيديو اختياري", blank=True)
+    country_of_manufacture = models.CharField("بلد الصنع", max_length=120, blank=True, db_index=True)
+    model_number = models.CharField("رقم الموديل", max_length=100, blank=True, db_index=True)
+    release_year = models.PositiveSmallIntegerField("سنة الإصدار", blank=True, null=True)
+    usage_level = models.CharField("مستوى الاستخدام", max_length=100, blank=True, db_index=True)
+    warranty = models.CharField("الضمان", max_length=200, blank=True)
+    box_contents = models.TextField("محتويات العلبة", blank=True)
+    usage_instructions = models.TextField("طريقة الاستخدام", blank=True)
+    setup_steps = models.TextField("خطوات التجهيز", blank=True)
+    safety_warnings = models.TextField("تحذيرات السلامة", blank=True)
+    cleaning_instructions = models.TextField("طريقة التنظيف", blank=True)
+    maintenance_schedule = models.TextField("جدول الصيانة", blank=True)
+    common_issues = models.TextField("الأعطال الشائعة والحلول الآمنة", blank=True)
+    manual_file = models.FileField("دليل PDF", upload_to="products/manuals/", blank=True, validators=[FileExtensionValidator(["pdf"]), validate_catalog_file_size])
     country = models.CharField("الدولة", max_length=120, blank=True, db_index=True)
     region = models.CharField("المنطقة", max_length=150, blank=True, db_index=True)
     farm = models.CharField("المزرعة", max_length=180, blank=True)
@@ -466,6 +531,13 @@ class Product(models.Model):
             raise ValidationError({"compare_at_price": "سعر المقارنة يجب ألا يقل عن السعر الحالي."})
         if self.altitude_masl is not None and self.altitude_masl > 5000:
             raise ValidationError({"altitude_masl": "الارتفاع يجب أن يكون بين 0 و5000 متر."})
+
+        if self.altitude_min and self.altitude_max and self.altitude_min > self.altitude_max:
+            raise ValidationError({"altitude_max": "يجب ألا يقل أعلى ارتفاع عن أدنى ارتفاع."})
+        if self.latitude is not None and not Decimal("-90") <= self.latitude <= Decimal("90"):
+            raise ValidationError({"latitude": "خط العرض يجب أن يكون بين -90 و90."})
+        if self.longitude is not None and not Decimal("-180") <= self.longitude <= Decimal("180"):
+            raise ValidationError({"longitude": "خط الطول يجب أن يكون بين -180 و180."})
 
     @property
     def price_per_100g(self):
